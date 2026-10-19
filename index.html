@@ -1,0 +1,1664 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tank- und Anlagenreinigung der Zukunft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+body.ext {
+  --bg: #041427; --fg: #eef6ff; --muted: #9fb6d1; --card: rgba(255,255,255,.06); --card-h: rgba(255,255,255,.1);
+  --border: rgba(255,255,255,.15); --accent: #36d6ff; --accent2: #7cf5c8; --accent-soft: rgba(54,214,255,.16);
+  --on-accent: #03213f; --shadow: 0 24px 60px rgba(0,0,0,.4);
+}
+body.int {
+  --bg: #f3f6fb; --fg: #0b2545; --muted: #5b6f8a; --card: #fff; --card-h: #f6f9ff;
+  --border: #d5dfed; --accent: #0a5bd8; --accent2: #00a3a3; --accent-soft: rgba(10,91,216,.09);
+  --on-accent: #fff; --shadow: 0 18px 40px rgba(11,37,69,.13);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { min-height: 100dvh; font-family: var(--font); color: var(--fg); background: var(--bg); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body.ext { background: radial-gradient(1100px 700px at 85% -10%, #12497f 0, transparent 60%), radial-gradient(900px 600px at -10% 110%, #0a3a4c 0, transparent 55%), var(--bg); background-attachment: fixed; }
+body.int { background: linear-gradient(180deg, #e3ecf9, var(--bg) 360px); }
+
+#progress { position: fixed; inset: 0 0 auto 0; height: 4px; background: var(--border); z-index: 20; }
+#progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .7s cubic-bezier(.2,.8,.2,1); box-shadow: 0 0 14px var(--accent); }
+
+.shell { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 16px; min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 22px 0 6px; font-size: 14px; }
+.brand { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.brand b { letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
+.brand .dot { width: 9px; height: 9px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 10px var(--accent); }
+.muted { color: var(--muted); }
+.topright { display: flex; align-items: center; gap: 14px; }
+#counter { font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 600; }
+#langs { display: flex; gap: 2px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+#langs:empty { display: none; }
+#langs button { font: inherit; font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 999px; border: 0; background: none; color: var(--muted); cursor: pointer; }
+#langs button.sel { background: var(--accent); color: var(--on-accent); }
+
+.main { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 64px; padding: 28px 0; }
+body.ext { --edw: 0px; --gut: clamp(16px, 4vw, 64px); }
+body.ext .shell { max-width: none; margin: 0 0 0 var(--edw); padding: 0 var(--gut); }
+body.ext .main { grid-template-columns: minmax(0, 640px) 1fr; }
+body.ext #nav { max-width: 640px; }
+#stage { position: relative; z-index: 1; max-width: 720px; width: 100%; }
+#visual { display: none; }
+body.ext #visual { display: block; position: fixed; top: 0; right: 0; bottom: 0; left: calc(var(--edw) + var(--gut) + 660px); z-index: 0; pointer-events: none; }
+.scene3d { display: block; width: 100%; height: 100%; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22%); mask-image: linear-gradient(90deg, transparent 0, #000 22%); }
+#scene-cap { position: absolute; right: 28px; bottom: 24px; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); opacity: .8; }
+body.ext .top { position: relative; z-index: 2; }
+
+.screen { animation: in-up .55s cubic-bezier(.2,.8,.2,1) both; }
+.screen.from-top { animation-name: in-down; }
+@keyframes in-up { from { opacity: 0; transform: translateY(28px); } }
+@keyframes in-down { from { opacity: 0; transform: translateY(-28px); } }
+
+.eyebrow { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+.tag { font-size: 11px; letter-spacing: .04em; text-transform: none; font-weight: 500; color: var(--muted); border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px; }
+.hero { font-size: clamp(32px, 5vw, 58px); line-height: 1.05; letter-spacing: -.03em; margin: 0 0 18px; font-weight: 800; }
+body.ext .hero { background: linear-gradient(100deg, #fff 35%, var(--accent) 75%, var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lead { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.55; color: var(--muted); margin: 0 0 24px; max-width: 60ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.pill { border: 1px solid var(--border); background: var(--card); border-radius: 99px; padding: 6px 13px; font-size: 14px; }
+.langpick { margin-bottom: 30px; }
+.langpick .muted { display: block; font-size: 13px; margin-bottom: 8px; }
+.langbtns { display: flex; flex-wrap: wrap; gap: 8px; }
+.langbtn { font: inherit; font-size: 15px; font-weight: 600; padding: 9px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: inherit; cursor: pointer; transition: border-color .15s, background .15s; }
+.langbtn:hover { border-color: var(--accent); }
+.langbtn.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.cta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+
+.qtitle { font-size: clamp(24px, 3.2vw, 36px); line-height: 1.17; letter-spacing: -.02em; margin: 0 0 10px; font-weight: 750; text-wrap: balance; }
+.qsub { color: var(--muted); font-size: 17px; line-height: 1.5; margin: 0 0 6px; max-width: 62ch; }
+.qhint { color: var(--muted); font-size: 14px; margin: 6px 0 0; }
+.qhint.center { text-align: center; }
+.qbody { margin-top: 26px; }
+
+.opts { display: grid; gap: 10px; }
+.opts.grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+.opts.row { grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); }
+.opt { font: inherit; color: inherit; text-align: left; display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 58px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-size: 16px; line-height: 1.3; transition: transform .15s, border-color .15s, background .15s, box-shadow .15s, opacity .15s; }
+.opt:hover { border-color: var(--accent); background: var(--card-h); transform: translateY(-1px); }
+.opt:focus-visible, .btn:focus-visible, .vote:focus-visible, .npsbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opt.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.opt.dim { opacity: .45; }
+.opt .key { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 6px; font-size: 11px; font-weight: 700; color: var(--muted); transition: inherit; }
+.opt.sel .key { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.opt .ico { flex: none; font-size: 22px; }
+.opt .lbl { overflow-wrap: anywhere; }
+.opt .lbl small { display: block; color: var(--muted); font-size: 13px; margin-top: 3px; }
+.opts.row .opt { flex-direction: column; justify-content: center; text-align: center; gap: 8px; padding: 16px 10px; }
+.opts.row .opt .ico { font-size: 28px; }
+.pop { animation: pop .32s; }
+@keyframes pop { 40% { transform: scale(1.04); } }
+.shake { animation: shake .35s; }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+.field { width: 100%; font: inherit; font-size: 17px; color: var(--fg); background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 13px 14px; outline: none; transition: border-color .15s, box-shadow .15s; }
+.field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.field::placeholder { color: var(--muted); opacity: .8; }
+.opts + .field { margin-top: 12px; }
+.field[hidden] { display: none; }
+textarea.field { resize: vertical; min-height: 110px; line-height: 1.5; }
+.field.big { font-size: 20px; padding: 18px; }
+.textwrap { position: relative; }
+.below { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+.wand { position: absolute; right: 4px; top: -46px; font-size: 34px; animation: wand 3s ease-in-out infinite; }
+@keyframes wand { 50% { transform: rotate(-14deg) translateY(-4px); } }
+.spark { position: absolute; pointer-events: none; color: var(--accent2); font-size: 15px; animation: spark .9s ease-out forwards; }
+@keyframes spark { to { opacity: 0; transform: translateY(-34px) scale(.4); } }
+
+.nps { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 6px; }
+.npsbtn { font: inherit; font-weight: 700; font-size: 17px; aspect-ratio: 1 / 1.15; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: inherit; cursor: pointer; transition: transform .15s, background .2s, border-color .15s, box-shadow .2s; }
+.npsbtn:hover { border-color: hsl(var(--h) 80% 55%); transform: translateY(-2px); }
+.npsbtn.sel { background: hsl(var(--h) 72% 48%); border-color: transparent; color: #fff; transform: translateY(-4px) scale(1.07); box-shadow: 0 10px 22px hsl(var(--h) 72% 40% / .45); }
+.ends { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; margin-top: 10px; }
+
+.sliderwrap { text-align: center; padding: 6px 4px; }
+.bigval { display: block; font-size: 68px; font-weight: 800; letter-spacing: -.03em; color: var(--accent); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+.bigval.idle { color: var(--muted); opacity: .6; }
+.range { -webkit-appearance: none; appearance: none; width: 100%; height: 10px; border-radius: 99px; background: linear-gradient(90deg, var(--accent) var(--p), var(--border) var(--p)); outline: none; cursor: pointer; }
+.range.idle { background: var(--border); }
+.range::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+.range::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); }
+.range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 5px var(--accent-soft); }
+
+.rankend { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px 4px; }
+.rankend.bottom { color: var(--muted); margin: 8px 0 0 4px; }
+.rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.rankitem { display: flex; align-items: center; gap: 12px; padding: 11px 11px 11px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; transition: box-shadow .2s, transform .2s, background .2s, border-color .2s; }
+.rankitem.dragging { cursor: grabbing; position: relative; z-index: 2; transform: scale(1.025); box-shadow: var(--shadow); border-color: var(--accent); background: var(--card-h); }
+.rankitem.flash { animation: pop .4s; }
+.grip { color: var(--muted); letter-spacing: -3px; font-weight: 700; }
+.num { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: var(--accent-soft); color: var(--accent); }
+.rankitem:first-child .num { background: var(--accent); color: var(--on-accent); }
+.rankitem .lbl { flex: 1; min-width: 0; }
+.arrows { display: flex; gap: 4px; }
+.arrows button { font: inherit; font-size: 10px; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; }
+.arrows button:hover { color: var(--accent); border-color: var(--accent); }
+
+.stack { position: relative; height: 210px; max-width: 540px; margin: 0 auto; }
+.idea { position: absolute; inset: 0; border-radius: 22px; border: 1px solid var(--border); background: var(--card); padding: 26px 28px; box-shadow: var(--shadow); transition: transform .33s cubic-bezier(.4,0,.2,1), opacity .33s; }
+body.ext .idea { background: #0c2546; }
+body.ext .idea.live { background: linear-gradient(150deg, #134a7a, #0c2546 65%); }
+.idea.ghost.g1 { transform: translateY(12px) scale(.96); opacity: .6; }
+.idea.ghost.g2 { transform: translateY(24px) scale(.92); opacity: .3; }
+.idea.live { animation: card-in .35s; }
+@keyframes card-in { from { transform: translateY(12px) scale(.96); opacity: .6; } }
+.idea.out-0 { transform: translate(0, -110%) rotate(-3deg); opacity: 0; }
+.idea.out-1 { transform: translate(115%, 0) rotate(8deg); opacity: 0; }
+.idea.out-2 { transform: translate(-115%, 0) rotate(-8deg); opacity: 0; }
+.idea-n { position: absolute; top: 18px; right: 22px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.idea-ico { font-size: 40px; margin-bottom: 10px; }
+.idea h3 { margin: 0 0 8px; font-size: 23px; letter-spacing: -.01em; }
+.idea p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 16px; }
+.votes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 540px; margin: 46px auto 0; }
+.vote { font: inherit; font-weight: 650; font-size: 15px; padding: 14px 8px; border-radius: 14px; border: 1px solid var(--border); background: var(--card); color: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s, border-color .15s, background .15s; }
+.vote:hover { transform: translateY(-2px); border-color: var(--accent); background: var(--card-h); }
+.vote .k { font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+.linkbtn { display: block; margin: 16px auto 0; font: inherit; font-size: 14px; color: var(--muted); background: none; border: 0; cursor: pointer; }
+.linkbtn:hover { color: var(--accent); }
+.cardsum { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.cardsum li { display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
+.cardsum .lbl { flex: 1; min-width: 0; }
+.chip.c0 { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.chip.c2 { background: transparent; color: var(--muted); }
+.chip { font: inherit; font-size: 13px; font-weight: 650; border-radius: 99px; padding: 5px 11px; border: 1px solid var(--border); background: var(--accent-soft); color: inherit; cursor: pointer; white-space: nowrap; }
+
+.formgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fld { display: grid; gap: 7px; font-size: 14px; font-weight: 600; }
+.fld em { font-weight: 400; font-style: normal; color: var(--muted); }
+.fld.wide { grid-column: 1 / -1; }
+.note { font-size: 13px; color: var(--muted); margin-top: 18px; line-height: 1.5; max-width: 62ch; }
+
+#nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0 26px; }
+#nav[hidden] { display: none; }
+.navright { display: flex; align-items: center; gap: 14px; }
+.hint { color: var(--muted); font-size: 13px; }
+.btn { font: inherit; font-weight: 650; font-size: 16px; border-radius: 12px; padding: 12px 22px; border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: transform .15s, box-shadow .15s, opacity .2s; }
+.btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on-accent); box-shadow: 0 8px 26px var(--accent-soft); }
+body.int .btn.primary { background: var(--accent); }
+.btn.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 30px var(--accent-soft); }
+.btn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+.btn.ghost { background: transparent; border-color: var(--border); color: var(--fg); }
+.btn.ghost:hover { border-color: var(--accent); }
+.btn.big { font-size: 18px; padding: 15px 30px; }
+
+.done-badge { width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on-accent); margin-bottom: 24px; animation: pop .6s; box-shadow: 0 0 40px var(--accent-soft); }
+.testbox { margin-top: 26px; padding: 16px 18px; border: 1px dashed var(--border); border-radius: 14px; font-size: 14px; color: var(--muted); }
+.testbox p { margin: 0 0 12px; }
+.drop { position: fixed; top: -24px; width: 10px; height: 14px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; z-index: 50; pointer-events: none; animation: fall linear forwards; }
+@keyframes fall { to { top: 110vh; rotate: var(--r); opacity: .2; } }
+
+
+@media (max-width: 860px) {
+  body.ext .main { grid-template-columns: minmax(0, 1fr); }
+  body.ext #visual { left: 0; opacity: .22; }
+  .scene3d { -webkit-mask-image: none; mask-image: none; }
+  #scene-cap { display: none; }
+  body.ext .shell { margin-left: 0; }
+  .hint { display: none; }
+  .formgrid { grid-template-columns: 1fr; }
+  .main { gap: 24px; padding: 14px 0 8px; align-items: start; }
+  #nav { position: sticky; bottom: 0; z-index: 5; padding: 22px 0 18px; background: linear-gradient(transparent, var(--bg) 35%); }
+}
+@media (max-width: 520px) {
+  .brand .muted { display: none; }
+  .nps { gap: 3px; }
+  .npsbtn { font-size: 14px; border-radius: 7px; }
+  .opts.grid { grid-template-columns: 1fr 1fr; }
+  .opt { padding: 12px; font-size: 15px; gap: 10px; }
+  .opt .key { display: none; }
+  .votes { gap: 6px; }
+  .vote { font-size: 13px; padding: 12px 4px; }
+  .vote .k { display: none; }
+  .stack { height: 270px; }
+  .idea { padding: 22px; }
+  .arrows button { width: 28px; }
+  .grip { display: none; }
+  .bigval { font-size: 54px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ---------- Editor-Sidebar (nur Projektteam) ---------- */
+#editor { position: fixed; top: 0; left: 0; bottom: 0; width: 340px; z-index: 40; display: flex; flex-direction: column; background: #081a31; color: #e8f1fb; border-right: 1px solid rgba(255,255,255,.12); box-shadow: 8px 0 30px rgba(0,0,0,.35); transform: translateX(-102%); transition: transform .3s cubic-bezier(.2,.8,.2,1); font-size: 14px; }
+body.editor-open #editor { transform: none; }
+body.ext.editor-open { --edw: 340px; }
+#editor-toggle { position: fixed; left: 0; top: 50%; z-index: 39; transform: translateY(-50%); padding: 16px 9px; border: 1px solid rgba(255,255,255,.18); border-left: 0; border-radius: 0 10px 10px 0; background: #0b2546; color: #e8f1fb; font: inherit; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; writing-mode: vertical-rl; transform-origin: center; box-shadow: 4px 0 16px rgba(0,0,0,.3); }
+#editor-toggle span { display: inline-block; transform: rotate(180deg); }
+body.editor-open #editor-toggle { display: none; }
+.ed-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 18px 18px 12px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.ed-head b { display: block; font-size: 15px; }
+.ed-head small { display: block; color: #8fa8c4; font-size: 12px; margin-top: 3px; }
+.ed-x { flex: none; width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,.18); background: none; color: inherit; font-size: 18px; cursor: pointer; }
+.ed-x:hover { border-color: #36d6ff; }
+.ed-sec { padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.ed-grow { flex: 1; min-height: 0; display: flex; flex-direction: column; padding-bottom: 6px; }
+.ed-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #8fa8c4; }
+.ed-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.ed-links { display: flex; gap: 10px; }
+.ed-link { font: inherit; font-size: 12px; color: #36d6ff; background: none; border: 0; padding: 0; cursor: pointer; }
+.ed-link:hover { text-decoration: underline; }
+.ed-hint { color: #8fa8c4; font-size: 12px; line-height: 1.45; margin: 8px 0 0; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 8px; padding: 3px; border-radius: 10px; background: rgba(255,255,255,.06); }
+.seg button { font: inherit; font-size: 13px; font-weight: 650; padding: 8px; border-radius: 8px; border: 0; background: none; color: #b9cbe0; cursor: pointer; }
+.seg button.sel { background: #36d6ff; color: #03213f; }
+.ed-list { list-style: none; margin: 0 -8px; padding: 0; overflow-y: auto; flex: 1; min-height: 0; }
+.ed-list li { display: flex; align-items: center; gap: 6px; padding: 2px 6px; border-radius: 10px; }
+.ed-list li:hover { background: rgba(255,255,255,.05); }
+.ed-list li.cur { background: rgba(54,214,255,.13); box-shadow: inset 2px 0 0 #36d6ff; }
+.ed-list li.off .ed-txt { opacity: .5; }
+.ed-check { flex: none; display: grid; place-items: center; width: 26px; height: 34px; cursor: pointer; }
+.ed-check input { width: 16px; height: 16px; accent-color: #36d6ff; cursor: pointer; }
+.ed-q { flex: 1; min-width: 0; display: flex; gap: 8px; align-items: flex-start; padding: 7px 4px; font: inherit; color: inherit; text-align: left; background: none; border: 0; cursor: pointer; }
+.ed-num { flex: none; width: 20px; font-size: 12px; font-weight: 700; color: #36d6ff; text-align: right; padding-top: 1px; font-variant-numeric: tabular-nums; }
+.ed-txt { min-width: 0; }
+.ed-title { display: block; font-size: 13px; line-height: 1.35; }
+.ed-meta { display: block; font-size: 11px; color: #8fa8c4; margin-top: 2px; }
+.ed-new { font-style: normal; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #03213f; background: #7cf5c8; border-radius: 4px; padding: 1px 5px; margin-left: 6px; }
+.ed-foot { padding: 14px 18px 18px; border-top: 1px solid rgba(255,255,255,.1); }
+.ed-foot .btn { width: 100%; justify-content: center; font-size: 15px; }
+@media (max-width: 1640px) { body.ext.editor-open #visual { left: 340px; opacity: .18; } body.ext.editor-open .scene3d { -webkit-mask-image: none; mask-image: none; } body.ext.editor-open #scene-cap { display: none; } }
+@media (max-width: 860px) { #editor { width: min(340px, 92vw); } body.ext.editor-open { --edw: 0px; } body.ext.editor-open #visual { left: 0; } }
+
+</style>
+</head>
+<body class="ext">
+<div id="progress"><i></i></div>
+<div class="shell">
+  <header class="top">
+    <div class="brand"><span class="dot"></span><b>Lechler</b><span class="muted">Tank & Plant Cleaning</span></div>
+    <div class="topright"><span id="counter"></span><div id="langs"></div></div>
+  </header>
+  <main class="main">
+    <div id="stage" aria-live="polite"></div>
+    <aside id="visual" aria-hidden="true"></aside>
+  </main>
+  <footer id="nav" hidden></footer>
+</div>
+<script id="preset">window.PRESET = {"locked":true,"variant":"s"};</script>
+<script>
+/* Externe Umfrage: Kunden, Anlagenbauer, Planer, Dienstleister.
+ * Fragenpool mit 20 Fragen; „default: false" = zusätzliche Frage, im Editor abwählbar/zuwählbar.
+ * Formulierungsvarianten: s = sachlich, p = professionell.  L(de, en, fr, es) · V(sachlich, professionell)
+ */
+(() => {
+const L = (de, en, fr, es) => ({ de, en, fr, es });
+const V = (s, p) => ({ s, p });
+const same = x => L(x, x, x, x);
+
+window.SURVEY = {
+  id: 'tankclean-future-extern-2026',
+  exportName: 'Umfrage_extern_final',
+  languages: ['de', 'en', 'fr', 'es'],
+  analysisLang: 'de',
+  // Empfänger der Antworten (POST, JSON im Body). Leer = Testmodus, Antworten nur lokal + Download.
+  endpoint: '',
+  editor: true,
+  confetti: false,
+  visual: 'scene',
+  sceneCaption: L('Visualisierung · Rotierender Zielstrahlreiniger im Prozesstank', 'Visualisation · Rotating jet head in a process tank', 'Visualisation · Tête de lavage à jets rotatifs dans une cuve de process', 'Visualización · Cabezal de chorro rotativo en un tanque de proceso'),
+  defaultVariant: 's',
+  variants: {
+    s: { label: 'Sachlich', hint: 'Klar und freundlich, ohne Umgangssprache.' },
+    p: { label: 'Professionell', hint: 'Formell und präzise – im Stil einer Marktstudie.' },
+  },
+
+  welcome: {
+    eyebrow: L('Marktbefragung 2026 · Tank- und Anlagenreinigung', 'Market survey 2026 · Tank and plant cleaning', 'Enquête de marché 2026 · Nettoyage de cuves et d’installations', 'Encuesta de mercado 2026 · Limpieza de tanques e instalaciones'),
+    title: V(
+      L('Wie sieht die Tank- und Anlagenreinigung der Zukunft aus?', 'What will tank and plant cleaning look like in the future?', 'À quoi ressemblera demain le nettoyage des cuves et des installations ?', '¿Cómo será en el futuro la limpieza de tanques e instalaciones?'),
+      L('Tank- und Anlagenreinigung der Zukunft – Ihre Anforderungen', 'The future of tank and plant cleaning – your requirements', 'Le nettoyage des cuves et installations de demain – vos exigences', 'La limpieza de tanques e instalaciones del futuro: sus requisitos')),
+    lead: V(
+      L('Sie kennen Ihre Anlagen am besten. Mit Ihren Antworten helfen Sie uns, Lösungen zu entwickeln, die sich an Ihrem tatsächlichen Bedarf orientieren.',
+        'Nobody knows your plants better than you. Your answers help us develop solutions based on what you actually need.',
+        'Personne ne connaît mieux vos installations que vous. Vos réponses nous aident à développer des solutions adaptées à vos besoins réels.',
+        'Nadie conoce sus instalaciones mejor que usted. Sus respuestas nos ayudan a desarrollar soluciones basadas en sus necesidades reales.'),
+      L('Wir entwickeln neue Produkte und Dienstleistungen für die Tank- und Anlagenreinigung. Ihre Einschätzung als Anwender hilft uns, diese Entwicklung konsequent an den Anforderungen des Marktes auszurichten.',
+        'We are developing new products and services for tank and plant cleaning. Your assessment as a user helps us align this development consistently with the requirements of the market.',
+        'Nous développons de nouveaux produits et services pour le nettoyage des cuves et des installations. Votre évaluation en tant qu’utilisateur nous aide à aligner ce développement sur les exigences du marché.',
+        'Estamos desarrollando nuevos productos y servicios para la limpieza de tanques e instalaciones. Su valoración como usuario nos ayuda a orientar este desarrollo a las exigencias del mercado.')),
+    meta: [
+      L('ca. {min} Minuten', 'approx. {min} minutes', 'env. {min} minutes', 'aprox. {min} minutos'),
+      L('{n} Fragen', '{n} questions', '{n} questions', '{n} preguntas'),
+      L('Ohne Angabe von Namen', 'No names required', 'Aucun nom requis', 'No se requiere nombre'),
+    ],
+  },
+
+  questions: [
+    {
+      id: 'industry', type: 'single', layout: 'grid',
+      title: V(L('In welcher Branche ist Ihr Unternehmen tätig?', 'Which industry does your company operate in?', 'Dans quel secteur votre entreprise est-elle active ?', '¿En qué sector opera su empresa?'),
+        L('Bitte wählen Sie die Branche Ihres Unternehmens.', 'Please select your company’s industry.', 'Veuillez sélectionner le secteur de votre entreprise.', 'Seleccione el sector de su empresa.')),
+      options: [
+        { id: 'beverage', label: L('Brauerei & Getränke', 'Brewing & beverages', 'Brasserie & boissons', 'Cervecería y bebidas') },
+        { id: 'food', label: L('Molkerei & Lebensmittel', 'Dairy & food', 'Laiterie & agroalimentaire', 'Lácteos y alimentación') },
+        { id: 'pharma', label: L('Pharma & Biotech', 'Pharma & biotech', 'Pharmacie & biotech', 'Farma y biotecnología') },
+        { id: 'chemicals', label: L('Chemie', 'Chemicals', 'Chimie', 'Química') },
+        { id: 'cosmetics', label: L('Kosmetik & Körperpflege', 'Cosmetics & personal care', 'Cosmétique & soins', 'Cosmética y cuidado personal') },
+        { id: 'other', label: L('Andere Branche', 'Other industry', 'Autre secteur', 'Otro sector') },
+      ],
+    },
+    {
+      id: 'role', type: 'single',
+      title: V(L('Welche Rolle hat Ihr Unternehmen in Bezug auf Behälter und Anlagen?', 'What is your company’s role with regard to tanks and plants?', 'Quel est le rôle de votre entreprise vis-à-vis des cuves et installations ?', '¿Qué papel desempeña su empresa en relación con tanques e instalaciones?'),
+        L('Wie lässt sich Ihr Unternehmen in Bezug auf Behälter und Prozessanlagen einordnen?', 'How would you classify your company with regard to tanks and process plants?', 'Comment situez-vous votre entreprise par rapport aux cuves et installations de process ?', '¿Cómo clasificaría a su empresa en relación con tanques e instalaciones de proceso?')),
+      options: [
+        { id: 'operator', label: L('Betreiber (eigene Produktion)', 'Operator (own production)', 'Exploitant (production propre)', 'Operador (producción propia)') },
+        { id: 'oem', label: L('Behälter- oder Anlagenbauer (OEM)', 'Tank or plant manufacturer (OEM)', 'Fabricant de cuves ou d’installations (OEM)', 'Fabricante de tanques o instalaciones (OEM)') },
+        { id: 'engineering', label: L('Planung & Engineering', 'Planning & engineering', 'Études & ingénierie', 'Planificación e ingeniería') },
+        { id: 'service', label: L('Reinigungs- oder Servicedienstleister', 'Cleaning or service provider', 'Prestataire de nettoyage ou de services', 'Proveedor de limpieza o servicios') },
+        { id: 'other', label: L('Sonstige', 'Other', 'Autre', 'Otro') },
+      ],
+    },
+    {
+      id: 'tank_size', type: 'single', layout: 'row', default: false,
+      title: V(L('Welche Behältergrößen reinigen Sie überwiegend?', 'Which tank sizes do you mainly clean?', 'Quelles tailles de cuves nettoyez-vous principalement ?', '¿Qué tamaños de tanque limpia principalmente?'),
+        L('Welche Behältervolumina sind in Ihrem Betrieb vorrangig zu reinigen?', 'Which tank volumes predominantly need to be cleaned at your site?', 'Quels volumes de cuves doivent principalement être nettoyés sur votre site ?', '¿Qué volúmenes de tanque deben limpiarse principalmente en su planta?')),
+      options: [
+        { id: 'lt1', label: same('< 1 m³') }, { id: '1_10', label: same('1–10 m³') }, { id: '10_50', label: same('10–50 m³') },
+        { id: '50_200', label: same('50–200 m³') }, { id: 'gt200', label: same('> 200 m³') },
+      ],
+    },
+    {
+      id: 'cleaning_method', type: 'multi', default: false,
+      title: V(L('Womit reinigen Sie Ihre Behälter heute?', 'What do you use to clean your tanks today?', 'Avec quoi nettoyez-vous vos cuves aujourd’hui ?', '¿Con qué limpia hoy sus tanques?'),
+        L('Welche Reinigungstechnik setzen Sie derzeit ein?', 'Which cleaning technology do you currently use?', 'Quelle technique de nettoyage utilisez-vous actuellement ?', '¿Qué tecnología de limpieza utiliza actualmente?')),
+      options: [
+        { id: 'static', label: L('Statische Sprühkugeln', 'Static spray balls', 'Boules de lavage statiques', 'Bolas de pulverización estáticas') },
+        { id: 'rotating', label: L('Rotierende Sprühköpfe', 'Rotating spray heads', 'Têtes de lavage rotatives', 'Cabezales rotativos de pulverización') },
+        { id: 'jet', label: L('Zielstrahlreiniger (Rotating Jet Heads)', 'Rotating jet heads (target jet cleaners)', 'Têtes de lavage à jets rotatifs', 'Cabezales de chorro rotativo') },
+        { id: 'manual', label: L('Manuelle Reinigung (z. B. Lanze)', 'Manual cleaning (e.g. lance)', 'Nettoyage manuel (p. ex. lance)', 'Limpieza manual (p. ej. lanza)') },
+        { id: 'external', label: L('Externer Dienstleister', 'External service provider', 'Prestataire externe', 'Proveedor externo') },
+        { id: 'unknown', exclusive: true, label: L('Nicht bekannt', 'Not known', 'Inconnu', 'No lo sé') },
+      ],
+    },
+    {
+      id: 'frequency', type: 'single', default: false,
+      title: V(L('Wie oft werden Ihre Behälter gereinigt?', 'How often are your tanks cleaned?', 'À quelle fréquence vos cuves sont-elles nettoyées ?', '¿Con qué frecuencia se limpian sus tanques?'),
+        L('In welchem Intervall erfolgt die Reinigung Ihrer Behälter typischerweise?', 'At what interval are your tanks typically cleaned?', 'À quel intervalle vos cuves sont-elles généralement nettoyées ?', '¿Con qué intervalo se limpian normalmente sus tanques?')),
+      options: [
+        { id: 'batch', label: L('Nach jeder Charge bzw. jedem Produktwechsel', 'After every batch or product change', 'Après chaque lot ou changement de produit', 'Tras cada lote o cambio de producto') },
+        { id: 'daily', label: L('Täglich', 'Daily', 'Quotidiennement', 'A diario') },
+        { id: 'weekly', label: L('Wöchentlich', 'Weekly', 'Chaque semaine', 'Semanalmente') },
+        { id: 'rarely', label: L('Seltener', 'Less often', 'Moins souvent', 'Con menor frecuencia') },
+        { id: 'varies', label: L('Sehr unterschiedlich', 'It varies widely', 'Très variable', 'Muy variable') },
+      ],
+    },
+    {
+      id: 'satisfaction', type: 'scale', min: 0, max: 10,
+      title: V(L('Wie zufrieden sind Sie insgesamt mit Ihrer aktuellen Behälterreinigung?', 'Overall, how satisfied are you with your current tank cleaning?', 'Dans l’ensemble, êtes-vous satisfait de votre nettoyage de cuves actuel ?', 'En general, ¿qué tan satisfecho está con la limpieza actual de sus tanques?'),
+        L('Wie bewerten Sie Ihre derzeitige Reinigungslösung insgesamt?', 'How would you rate your current cleaning solution overall?', 'Comment évaluez-vous globalement votre solution de nettoyage actuelle ?', '¿Cómo valora en conjunto su solución de limpieza actual?')),
+      minLabel: L('0 = sehr unzufrieden', '0 = very dissatisfied', '0 = très insatisfait', '0 = muy insatisfecho'),
+      maxLabel: L('10 = sehr zufrieden', '10 = very satisfied', '10 = très satisfait', '10 = muy satisfecho'),
+    },
+    {
+      id: 'pains', type: 'multi', max: 3, other: true,
+      title: V(L('Welche Punkte stören Sie an Ihrer heutigen Behälterreinigung am meisten?', 'What bothers you most about your current tank cleaning?', 'Qu’est-ce qui vous gêne le plus dans votre nettoyage de cuves actuel ?', '¿Qué es lo que más le molesta de la limpieza actual de sus tanques?'),
+        L('Wo sehen Sie die größten Schwachstellen Ihrer aktuellen Reinigungslösung?', 'Where do you see the greatest weaknesses of your current cleaning solution?', 'Où voyez-vous les principales faiblesses de votre solution de nettoyage actuelle ?', '¿Dónde ve las principales debilidades de su solución de limpieza actual?')),
+      options: [
+        { id: 'downtime', label: L('Lange Reinigungs- und Stillstandszeiten', 'Long cleaning and downtimes', 'Temps de nettoyage et d’arrêt trop longs', 'Largos tiempos de limpieza y parada') },
+        { id: 'consumption', label: L('Hoher Verbrauch an Wasser, Chemie und Energie', 'High consumption of water, chemicals and energy', 'Forte consommation d’eau, de produits chimiques et d’énergie', 'Alto consumo de agua, químicos y energía') },
+        { id: 'proof', label: L('Fehlender Nachweis des Reinigungsergebnisses', 'No verification of the cleaning result', 'Absence de preuve du résultat de nettoyage', 'Falta de verificación del resultado de limpieza') },
+        { id: 'residues', label: L('Rückstände und Sprühschatten', 'Residues and spray shadows', 'Résidus et zones d’ombre', 'Residuos y zonas de sombra') },
+        { id: 'failures', label: L('Ausfälle und Verschleiß der Reinigungsgeräte', 'Failures and wear of cleaning devices', 'Pannes et usure des équipements de nettoyage', 'Fallos y desgaste de los equipos de limpieza') },
+        { id: 'validation', label: L('Aufwand für Validierung und Dokumentation', 'Effort for validation and documentation', 'Charge de validation et de documentation', 'Esfuerzo de validación y documentación') },
+        { id: 'knowhow', label: L('Fehlendes Know-how oder Personal', 'Lack of know-how or staff', 'Manque de savoir-faire ou de personnel', 'Falta de conocimientos o de personal') },
+        { id: 'none', exclusive: true, label: L('Keine – die Reinigung funktioniert zufriedenstellend', 'None – cleaning works satisfactorily', 'Aucune – le nettoyage fonctionne de manière satisfaisante', 'Ninguna: la limpieza funciona satisfactoriamente') },
+      ],
+    },
+    {
+      id: 'downtime_share', type: 'scale', slider: true, min: 0, max: 50, step: 1, unit: ' %', default: false,
+      title: V(L('Wie viel Ihrer Produktionszeit entfällt schätzungsweise auf Reinigung?', 'Roughly how much of your production time is taken up by cleaning?', 'Selon vous, quelle part de votre temps de production est consacrée au nettoyage ?', 'Aproximadamente, ¿cuánto de su tiempo de producción se dedica a la limpieza?'),
+        L('Welcher Anteil der Anlagenverfügbarkeit entfällt nach Ihrer Schätzung auf Reinigungsprozesse?', 'In your estimation, what share of plant availability is taken up by cleaning processes?', 'Selon votre estimation, quelle part de la disponibilité des installations est absorbée par les processus de nettoyage ?', 'Según su estimación, ¿qué parte de la disponibilidad de la planta corresponde a procesos de limpieza?')),
+      minLabel: same('0 %'), maxLabel: same('≥ 50 %'),
+    },
+    {
+      id: 'priorities', type: 'rank',
+      title: V(L('Was ist Ihnen bei der Reinigung am wichtigsten?', 'What matters most to you in cleaning?', 'Qu’est-ce qui compte le plus pour vous dans le nettoyage ?', '¿Qué es lo más importante para usted en la limpieza?'),
+        L('Bitte priorisieren Sie die folgenden Anforderungen an eine Reinigungslösung.', 'Please prioritise the following requirements for a cleaning solution.', 'Veuillez hiérarchiser les exigences suivantes pour une solution de nettoyage.', 'Priorice los siguientes requisitos para una solución de limpieza.')),
+      sub: V(L('Bitte bringen Sie die Punkte in eine Reihenfolge – oben steht das Wichtigste.', 'Please put the items in order – most important at the top.', 'Veuillez classer les éléments – le plus important en haut.', 'Ordene los elementos: lo más importante arriba.'),
+        L('Ordnen Sie die Kriterien nach ihrer Bedeutung für Ihr Unternehmen.', 'Rank the criteria by their importance to your company.', 'Classez les critères selon leur importance pour votre entreprise.', 'Ordene los criterios según su importancia para su empresa.')),
+      items: [
+        { id: 'speed', label: L('Kurze Reinigungszeit, höhere Anlagenverfügbarkeit', 'Short cleaning time, higher plant availability', 'Nettoyage rapide, meilleure disponibilité', 'Limpieza rápida, mayor disponibilidad') },
+        { id: 'resources', label: L('Geringer Verbrauch an Wasser, Chemie und Energie', 'Low consumption of water, chemicals and energy', 'Faible consommation d’eau, de chimie et d’énergie', 'Bajo consumo de agua, químicos y energía') },
+        { id: 'reliability', label: L('Prozesssicherheit und Reinigungsnachweis', 'Process reliability and cleaning verification', 'Fiabilité du process et preuve de nettoyage', 'Fiabilidad del proceso y verificación de limpieza') },
+        { id: 'capex', label: L('Niedrige Investitionskosten', 'Low investment cost', 'Faible coût d’investissement', 'Bajo coste de inversión') },
+        { id: 'maintenance', label: L('Geringer Wartungsaufwand, lange Lebensdauer', 'Low maintenance, long service life', 'Peu d’entretien, longue durée de vie', 'Poco mantenimiento, larga vida útil') },
+        { id: 'support', label: L('Fachkundige Beratung und schneller Service', 'Expert advice and fast service', 'Conseil expert et service rapide', 'Asesoramiento experto y servicio rápido') },
+      ],
+    },
+    {
+      id: 'sustainability', type: 'single', layout: 'row', default: false,
+      title: V(L('Wie stark ist bei Ihnen der Druck, Wasser, Chemie und Energie bei der Reinigung einzusparen?', 'How much pressure are you under to save water, chemicals and energy in cleaning?', 'Quelle est la pression pour réduire l’eau, les produits chimiques et l’énergie lors du nettoyage ?', '¿Cuánta presión tiene para ahorrar agua, químicos y energía en la limpieza?'),
+        L('Welche Bedeutung haben Nachhaltigkeitsziele (Wasser, Chemie, Energie) für Ihre Reinigungsprozesse?', 'How important are sustainability targets (water, chemicals, energy) for your cleaning processes?', 'Quelle importance ont les objectifs de durabilité (eau, chimie, énergie) pour vos processus de nettoyage ?', '¿Qué importancia tienen los objetivos de sostenibilidad (agua, químicos, energía) en sus procesos de limpieza?')),
+      options: [
+        { id: '1', label: L('Keine', 'None', 'Aucune', 'Ninguna') },
+        { id: '2', label: L('Gering', 'Low', 'Faible', 'Baja') },
+        { id: '3', label: L('Mittel', 'Moderate', 'Moyenne', 'Media') },
+        { id: '4', label: L('Hoch', 'High', 'Élevée', 'Alta') },
+        { id: '5', label: L('Sehr hoch – konkrete Ziele vorgegeben', 'Very high – specific targets set', 'Très élevée – objectifs définis', 'Muy alta: objetivos concretos') },
+      ],
+    },
+    {
+      id: 'ideas', type: 'cards',
+      title: V(L('Welche dieser Zukunftsideen wären für Sie relevant?', 'Which of these ideas for the future would be relevant to you?', 'Lesquelles de ces idées d’avenir seraient pertinentes pour vous ?', '¿Cuáles de estas ideas de futuro serían relevantes para usted?'),
+        L('Bitte bewerten Sie die folgenden Lösungsansätze hinsichtlich ihres Nutzens für Ihr Unternehmen.', 'Please rate the following approaches in terms of their benefit to your company.', 'Veuillez évaluer les approches suivantes en fonction de leur utilité pour votre entreprise.', 'Valore los siguientes enfoques según su utilidad para su empresa.')),
+      sub: V(L('Bitte bewerten Sie jede Idee kurz.', 'Please rate each idea briefly.', 'Veuillez évaluer brièvement chaque idée.', 'Valore brevemente cada idea.'), null),
+      scaleOpts: [
+        { id: 'high', label: V(L('Sehr relevant', 'Highly relevant', 'Très pertinent', 'Muy relevante'), L('Hoher Nutzen', 'High benefit', 'Utilité élevée', 'Gran utilidad')) },
+        { id: 'mid', label: V(L('Interessant', 'Interesting', 'Intéressant', 'Interesante'), L('Mittlerer Nutzen', 'Some benefit', 'Utilité moyenne', 'Utilidad media')) },
+        { id: 'low', label: V(L('Nicht relevant', 'Not relevant', 'Non pertinent', 'No relevante'), L('Kein Nutzen', 'No benefit', 'Aucune utilité', 'Ninguna utilidad')) },
+      ],
+      items: [
+        { id: 'live_proof', label: L('Reinigungsnachweis in Echtzeit', 'Real-time cleaning verification', 'Preuve de nettoyage en temps réel', 'Verificación de limpieza en tiempo real'),
+          desc: L('Sensoren bestätigen während des Prozesses, dass der Behälter sauber ist – inklusive automatischem Protokoll.', 'Sensors confirm during the process that the tank is clean – including an automatic report.', 'Des capteurs confirment pendant le process que la cuve est propre – rapport automatique inclus.', 'Sensores confirman durante el proceso que el tanque está limpio, con informe automático.') },
+        { id: 'predictive', label: L('Vorausschauende Wartung', 'Predictive maintenance', 'Maintenance prédictive', 'Mantenimiento predictivo'),
+          desc: L('Das Reinigungsgerät meldet Wartungsbedarf, bevor es ausfällt.', 'The cleaning device reports maintenance needs before it fails.', 'L’équipement de nettoyage signale le besoin d’entretien avant la panne.', 'El equipo de limpieza avisa de la necesidad de mantenimiento antes de fallar.') },
+        { id: 'simulation', label: L('Reinigungssimulation vorab', 'Cleaning simulation in advance', 'Simulation du nettoyage en amont', 'Simulación de limpieza previa'),
+          desc: L('Vor der Investition digital prüfen, wie gut Ihr Behälter gereinigt wird – inklusive Zeit und Verbrauch.', 'Check digitally before investing how well your tank will be cleaned – including time and consumption.', 'Vérifier numériquement avant l’investissement la qualité du nettoyage de votre cuve – durée et consommation comprises.', 'Comprobar digitalmente antes de invertir lo bien que se limpiará su tanque, incluidos tiempo y consumo.') },
+        { id: 'self_optimizing', label: L('Selbstoptimierende Reinigung', 'Self-optimising cleaning', 'Nettoyage auto-optimisé', 'Limpieza autooptimizada'),
+          desc: L('Das System passt Zeit, Druck und Medien automatisch an den Verschmutzungsgrad an.', 'The system automatically adapts time, pressure and media to the level of soiling.', 'Le système adapte automatiquement durée, pression et fluides au degré d’encrassement.', 'El sistema ajusta automáticamente tiempo, presión y medios al grado de suciedad.') },
+        { id: 'remote', label: L('Fernunterstützung durch Experten', 'Remote expert support', 'Assistance d’experts à distance', 'Asistencia remota de expertos'),
+          desc: L('Reinigungsexperten unterstützen Sie per Video oder App direkt an der Anlage.', 'Cleaning experts support you via video or app directly at the plant.', 'Des experts du nettoyage vous assistent par vidéo ou application, directement sur l’installation.', 'Expertos en limpieza le asisten por vídeo o app directamente en la instalación.') },
+        { id: 'audit', label: L('Reinigungsanalyse vor Ort', 'On-site cleaning audit', 'Audit de nettoyage sur site', 'Auditoría de limpieza in situ'),
+          desc: L('Experten analysieren Ihre Reinigungsprozesse und zeigen Einsparpotenziale bei Zeit, Wasser und Kosten auf.', 'Experts analyse your cleaning processes and identify savings in time, water and cost.', 'Des experts analysent vos processus de nettoyage et identifient les économies de temps, d’eau et de coûts.', 'Expertos analizan sus procesos de limpieza e identifican ahorros de tiempo, agua y costes.') },
+      ],
+    },
+    {
+      id: 'data_openness', type: 'single', default: false,
+      title: V(L('Wären Sie bereit, Reinigungsdaten digital zu erfassen und auszuwerten?', 'Would you be willing to record and analyse cleaning data digitally?', 'Seriez-vous prêt à enregistrer et analyser numériquement les données de nettoyage ?', '¿Estaría dispuesto a registrar y analizar datos de limpieza digitalmente?'),
+        L('Inwieweit kommt für Sie eine digitale Erfassung und Auswertung von Reinigungsdaten infrage?', 'To what extent would digital recording and analysis of cleaning data be an option for you?', 'Dans quelle mesure l’enregistrement et l’analyse numériques des données de nettoyage seraient-ils envisageables pour vous ?', '¿En qué medida sería una opción para usted el registro y análisis digital de datos de limpieza?')),
+      sub: L('z. B. Druck, Durchfluss, Drehbewegung, Reinigungsdauer', 'e.g. pressure, flow rate, rotation, cleaning time', 'p. ex. pression, débit, rotation, durée de nettoyage', 'p. ej. presión, caudal, rotación, duración de la limpieza'),
+      options: [
+        { id: 'no', label: L('Nein – aus Gründen der IT-Sicherheit nicht möglich', 'No – not possible for IT security reasons', 'Non – impossible pour des raisons de sécurité informatique', 'No: imposible por motivos de seguridad informática') },
+        { id: 'local', label: L('Ja, aber nur lokal in der Anlage', 'Yes, but only locally within the plant', 'Oui, mais uniquement en local', 'Sí, pero solo localmente en la planta') },
+        { id: 'cloud', label: L('Ja, auch cloudbasiert', 'Yes, including cloud-based', 'Oui, y compris dans le cloud', 'Sí, también en la nube') },
+        { id: 'already', label: L('Wird bereits umgesetzt', 'Already in place', 'Déjà en place', 'Ya implantado') },
+      ],
+    },
+    {
+      id: 'service_model', type: 'single',
+      title: V(L('Angenommen, Sie würden keine Reinigungstechnik mehr kaufen, sondern die Reinigung als Dienstleistung beziehen: Wäre das für Sie denkbar?', 'Suppose you no longer bought cleaning equipment but procured cleaning as a service: would that be conceivable for you?', 'Imaginons que vous n’achetiez plus d’équipement de nettoyage, mais le nettoyage en tant que service : serait-ce envisageable pour vous ?', 'Suponga que ya no compra equipos de limpieza, sino la limpieza como servicio: ¿sería concebible para usted?'),
+        L('Wie bewerten Sie ein Betreibermodell, bei dem Sie die Reinigungsleistung statt der Reinigungstechnik beziehen?', 'How would you assess an operator model in which you procure the cleaning performance rather than the cleaning equipment?', 'Comment évaluez-vous un modèle dans lequel vous achetez la prestation de nettoyage plutôt que l’équipement ?', '¿Cómo valora un modelo en el que adquiere el rendimiento de limpieza en lugar del equipo de limpieza?')),
+      sub: V(L('Hardware, Wartung, Überwachung und Dokumentation wären inklusive – abgerechnet im Abonnement oder pro Reinigung.', 'Hardware, maintenance, monitoring and documentation would be included – billed as a subscription or per cleaning cycle.', 'Matériel, maintenance, surveillance et documentation seraient inclus – facturés par abonnement ou par cycle de nettoyage.', 'Hardware, mantenimiento, supervisión y documentación incluidos, facturados por suscripción o por ciclo de limpieza.'),
+        L('Leistungsumfang: Bereitstellung der Hardware, Wartung, Zustandsüberwachung und Reinigungsnachweis; Abrechnung als Abonnement oder nutzungsbasiert (Pay-per-Clean).', 'Scope: provision of hardware, maintenance, condition monitoring and cleaning verification; billed as a subscription or usage-based (pay-per-clean).', 'Périmètre : mise à disposition du matériel, maintenance, surveillance d’état et preuve de nettoyage ; facturation par abonnement ou à l’usage (pay-per-clean).', 'Alcance: suministro del hardware, mantenimiento, supervisión del estado y verificación de limpieza; facturación por suscripción o por uso (pay-per-clean).')),
+      options: [
+        { id: 'no', label: V(L('Kommt für uns nicht infrage', 'Not an option for us', 'Exclu pour nous', 'No es una opción para nosotros'), L('Nicht relevant', 'Not relevant', 'Non pertinent', 'No relevante')) },
+        { id: 'sceptical', label: V(L('Eher skeptisch', 'Rather sceptical', 'Plutôt sceptique', 'Más bien escéptico'), L('Eher nicht relevant', 'Rather not relevant', 'Plutôt non pertinent', 'Poco relevante')) },
+        { id: 'depends', label: V(L('Hängt von den Konditionen ab', 'Depends on the terms', 'Dépend des conditions', 'Depende de las condiciones'), L('Abhängig von den Konditionen', 'Depending on the terms', 'Selon les conditions', 'Según las condiciones')) },
+        { id: 'interested', label: V(L('Interessant – wir möchten mehr erfahren', 'Interesting – we’d like to learn more', 'Intéressant – nous aimerions en savoir plus', 'Interesante: queremos saber más'), L('Relevant', 'Relevant', 'Pertinent', 'Relevante')) },
+        { id: 'very', label: V(L('Sehr interessant – wir würden das gern zeitnah prüfen', 'Very interesting – we’d like to evaluate it soon', 'Très intéressant – nous aimerions l’étudier rapidement', 'Muy interesante: nos gustaría evaluarlo pronto'), L('Hoch relevant', 'Highly relevant', 'Très pertinent', 'Muy relevante')) },
+      ],
+    },
+    {
+      id: 'payment_model', type: 'single', default: false,
+      title: V(L('Welches Bezahlmodell wäre für Sie am attraktivsten?', 'Which payment model would be most attractive to you?', 'Quel modèle de paiement serait le plus intéressant pour vous ?', '¿Qué modelo de pago le resultaría más atractivo?'),
+        L('Welches Beschaffungs- bzw. Abrechnungsmodell bevorzugen Sie für Reinigungstechnik?', 'Which procurement or billing model do you prefer for cleaning equipment?', 'Quel modèle d’achat ou de facturation privilégiez-vous pour les équipements de nettoyage ?', '¿Qué modelo de adquisición o facturación prefiere para equipos de limpieza?')),
+      options: [
+        { id: 'purchase', label: L('Klassischer Kauf', 'Outright purchase', 'Achat classique', 'Compra clásica') },
+        { id: 'purchase_service', label: L('Kauf mit Wartungsvertrag', 'Purchase with maintenance contract', 'Achat avec contrat de maintenance', 'Compra con contrato de mantenimiento') },
+        { id: 'lease', label: L('Miete oder Leasing', 'Rental or leasing', 'Location ou leasing', 'Alquiler o leasing') },
+        { id: 'subscription', label: L('Abonnement inklusive Service', 'Subscription including service', 'Abonnement service inclus', 'Suscripción con servicio incluido') },
+        { id: 'per_clean', label: L('Abrechnung pro Reinigung (Pay-per-Clean)', 'Billing per cleaning cycle (pay-per-clean)', 'Facturation par nettoyage (pay-per-clean)', 'Facturación por limpieza (pay-per-clean)') },
+      ],
+    },
+    {
+      id: 'adoption', type: 'single',
+      title: V(L('Ab wann würden Sie eine neue Reinigungstechnologie einsetzen?', 'At what point would you adopt a new cleaning technology?', 'À partir de quand adopteriez-vous une nouvelle technologie de nettoyage ?', '¿A partir de cuándo adoptaría una nueva tecnología de limpieza?'),
+        L('Wie gehen Sie typischerweise bei der Einführung neuer Reinigungstechnologien vor?', 'How do you typically approach the introduction of new cleaning technologies?', 'Comment abordez-vous généralement l’introduction de nouvelles technologies de nettoyage ?', '¿Cómo aborda normalmente la introducción de nuevas tecnologías de limpieza?')),
+      options: [
+        { id: 'pilot', label: V(L('Frühzeitig als Pilotanwender', 'Early, as a pilot user', 'Tôt, en tant qu’utilisateur pilote', 'Pronto, como usuario piloto'),
+          L('Wir testen neue Technologien frühzeitig in Pilotprojekten', 'We test new technologies early in pilot projects', 'Nous testons tôt les nouvelles technologies dans des projets pilotes', 'Probamos nuevas tecnologías pronto en proyectos piloto')) },
+        { id: 'references', label: V(L('Sobald erste Referenzen vorliegen', 'As soon as first references exist', 'Dès les premières références', 'En cuanto existan primeras referencias'),
+          L('Wir setzen auf Lösungen mit ersten Referenzen', 'We rely on solutions with initial references', 'Nous privilégions les solutions disposant de premières références', 'Apostamos por soluciones con primeras referencias')) },
+        { id: 'proven', label: V(L('Erst nach mehrjähriger Bewährung', 'Only after several years of proven use', 'Après plusieurs années de retour d’expérience', 'Solo tras varios años de eficacia probada'),
+          L('Wir setzen ausschließlich langjährig bewährte Lösungen ein', 'We only use solutions proven over many years', 'Nous n’utilisons que des solutions éprouvées depuis de nombreuses années', 'Solo usamos soluciones probadas durante muchos años')) },
+        { id: 'on_failure', label: V(L('Erst, wenn die bestehende Lösung ersetzt werden muss', 'Only when the existing solution has to be replaced', 'Uniquement lorsque la solution existante doit être remplacée', 'Solo cuando haya que sustituir la solución actual'),
+          L('Wir ersetzen Technik erst bei Ausfall oder am Ende der Lebensdauer', 'We only replace equipment on failure or at end of life', 'Nous ne remplaçons les équipements qu’en cas de panne ou en fin de vie', 'Solo sustituimos equipos en caso de fallo o al final de su vida útil')) },
+      ],
+    },
+    {
+      id: 'switch_trigger', type: 'multi', max: 3, default: false,
+      title: V(L('Was müsste erfüllt sein, damit Sie Ihre bestehende Reinigung umstellen?', 'What would need to be in place for you to switch your existing cleaning?', 'Quelles conditions devraient être remplies pour que vous changiez votre nettoyage actuel ?', '¿Qué tendría que cumplirse para que cambiara su limpieza actual?'),
+        L('Welche Voraussetzungen sind für Sie entscheidend, um eine bestehende Reinigungslösung zu ersetzen?', 'Which prerequisites are decisive for you to replace an existing cleaning solution?', 'Quelles conditions sont déterminantes pour remplacer une solution de nettoyage existante ?', '¿Qué requisitos son decisivos para sustituir una solución de limpieza existente?')),
+      options: [
+        { id: 'roi', label: L('Nachgewiesene Einsparung, kurze Amortisation', 'Proven savings, short payback', 'Économies prouvées, amortissement rapide', 'Ahorro demostrado, amortización rápida') },
+        { id: 'references', label: L('Referenzen aus der eigenen Branche', 'References from our industry', 'Références dans notre secteur', 'Referencias de nuestro sector') },
+        { id: 'trial', label: L('Test in der eigenen Anlage', 'Trial in our own plant', 'Essai dans notre installation', 'Prueba en nuestra propia planta') },
+        { id: 'no_retrofit', label: L('Keine Umbauten an der Anlage', 'No modifications to the plant', 'Aucune modification de l’installation', 'Sin modificaciones en la planta') },
+        { id: 'certification', label: L('Zertifizierungen (z. B. EHEDG, 3-A, FDA)', 'Certifications (e.g. EHEDG, 3-A, FDA)', 'Certifications (p. ex. EHEDG, 3-A, FDA)', 'Certificaciones (p. ej. EHEDG, 3-A, FDA)') },
+        { id: 'guarantee', label: L('Garantie auf das Reinigungsergebnis', 'Guaranteed cleaning result', 'Garantie du résultat de nettoyage', 'Garantía del resultado de limpieza') },
+        { id: 'support', label: L('Begleitung bei Inbetriebnahme und Validierung', 'Support with commissioning and validation', 'Accompagnement à la mise en service et à la validation', 'Apoyo en la puesta en marcha y validación') },
+      ],
+    },
+    {
+      id: 'decision_makers', type: 'multi', default: false,
+      title: V(L('Wer entscheidet in Ihrem Unternehmen über Reinigungstechnik?', 'Who decides on cleaning technology in your company?', 'Qui décide des technologies de nettoyage dans votre entreprise ?', '¿Quién decide sobre la tecnología de limpieza en su empresa?'),
+        L('Welche Funktionen sind an der Auswahl von Reinigungstechnik beteiligt?', 'Which functions are involved in selecting cleaning technology?', 'Quelles fonctions participent au choix des technologies de nettoyage ?', '¿Qué funciones participan en la selección de tecnología de limpieza?')),
+      options: [
+        { id: 'production', label: L('Produktion / Betrieb', 'Production / operations', 'Production / exploitation', 'Producción / operaciones') },
+        { id: 'maintenance', label: L('Instandhaltung', 'Maintenance', 'Maintenance', 'Mantenimiento') },
+        { id: 'qa', label: L('Qualitätssicherung / Hygiene', 'Quality assurance / hygiene', 'Assurance qualité / hygiène', 'Garantía de calidad / higiene') },
+        { id: 'engineering', label: L('Technik / Engineering', 'Engineering', 'Technique / ingénierie', 'Ingeniería') },
+        { id: 'purchasing', label: L('Einkauf', 'Purchasing', 'Achats', 'Compras') },
+        { id: 'management', label: L('Geschäftsleitung', 'Management', 'Direction', 'Dirección') },
+        { id: 'oem', label: L('Wird vom Anlagenbauer vorgegeben', 'Specified by the plant manufacturer', 'Imposé par le constructeur', 'Lo define el fabricante de la instalación') },
+      ],
+    },
+    {
+      id: 'info_sources', type: 'multi', default: false,
+      title: V(L('Wo informieren Sie sich über neue Reinigungstechnik?', 'Where do you find out about new cleaning technology?', 'Où vous informez-vous sur les nouvelles technologies de nettoyage ?', '¿Dónde se informa sobre nuevas tecnologías de limpieza?'),
+        L('Welche Informationsquellen nutzen Sie zu neuen Reinigungstechnologien?', 'Which sources of information do you use on new cleaning technologies?', 'Quelles sources d’information utilisez-vous sur les nouvelles technologies de nettoyage ?', '¿Qué fuentes de información utiliza sobre nuevas tecnologías de limpieza?')),
+      options: [
+        { id: 'fairs', label: L('Fachmessen', 'Trade fairs', 'Salons professionnels', 'Ferias especializadas') },
+        { id: 'press', label: L('Fachzeitschriften', 'Trade journals', 'Revues spécialisées', 'Revistas especializadas') },
+        { id: 'supplier', label: L('Außendienst der Lieferanten', 'Supplier sales representatives', 'Commerciaux des fournisseurs', 'Comerciales de proveedores') },
+        { id: 'oem', label: L('Anlagenbauer', 'Plant manufacturers', 'Constructeurs d’installations', 'Fabricantes de instalaciones') },
+        { id: 'research', label: L('Verbände und Forschung (z. B. VDMA, Fraunhofer)', 'Associations and research (e.g. VDMA, Fraunhofer)', 'Associations et recherche (p. ex. VDMA, Fraunhofer)', 'Asociaciones e investigación (p. ej. VDMA, Fraunhofer)') },
+        { id: 'online', label: L('Online-Recherche und LinkedIn', 'Online research and LinkedIn', 'Recherche en ligne et LinkedIn', 'Búsqueda en línea y LinkedIn') },
+        { id: 'network', label: L('Kollegen und Netzwerk', 'Colleagues and network', 'Collègues et réseau', 'Colegas y red profesional') },
+      ],
+    },
+    {
+      id: 'wish', type: 'text', optional: true, rows: 4,
+      title: V(L('Wenn Sie einen Wunsch frei hätten: Was würde Ihre Tank- und Anlagenreinigung grundlegend verbessern?', 'If you could have one wish: what would fundamentally improve your tank and plant cleaning?', 'Si vous pouviez faire un vœu : qu’est-ce qui améliorerait fondamentalement le nettoyage de vos cuves et installations ?', 'Si pudiera pedir un deseo: ¿qué mejoraría de forma fundamental la limpieza de sus tanques e instalaciones?'),
+        L('Welche Anforderungen oder Verbesserungen werden für Ihre Tank- und Anlagenreinigung künftig von größter Bedeutung sein?', 'Which requirements or improvements will be most important for your tank and plant cleaning in the future?', 'Quelles exigences ou améliorations seront les plus importantes à l’avenir pour le nettoyage de vos cuves et installations ?', '¿Qué requisitos o mejoras serán más importantes en el futuro para la limpieza de sus tanques e instalaciones?')),
+      sub: V(L('Technik, Service oder Geschäftsmodell – alle Ideen sind willkommen.', 'Technology, service or business model – all ideas are welcome.', 'Technique, service ou modèle économique – toutes les idées sont les bienvenues.', 'Tecnología, servicio o modelo de negocio: todas las ideas son bienvenidas.'),
+        L('Bitte beschreiben Sie Ihre Anforderungen möglichst konkret.', 'Please describe your requirements as specifically as possible.', 'Veuillez décrire vos exigences aussi précisément que possible.', 'Describa sus requisitos de la forma más concreta posible.')),
+      placeholder: V(L('Ich wünsche mir …', 'I would like …', 'Je souhaiterais …', 'Me gustaría …'), L('Ihre Anmerkungen', 'Your comments', 'Vos remarques', 'Sus comentarios')),
+    },
+    {
+      id: 'company', type: 'form',
+      title: V(L('Zum Abschluss noch einige Angaben zur Einordnung.', 'Finally, a few details for classification.', 'Pour terminer, quelques informations de classification.', 'Para terminar, algunos datos para la clasificación.'),
+        L('Angaben zu Ihrem Unternehmen', 'Information about your company', 'Informations sur votre entreprise', 'Datos de su empresa')),
+      sub: V(L('Wir fragen weder Namen noch Position ab – nur Firma und Land.', 'We don’t ask for names or job titles – only company and country.', 'Nous ne demandons ni nom ni fonction – uniquement l’entreprise et le pays.', 'No pedimos nombres ni cargos: solo empresa y país.'),
+        L('Die Angaben dienen ausschließlich der statistischen Auswertung; die Angabe einer E-Mail-Adresse ist freiwillig.', 'This information is used solely for statistical analysis; providing an email address is optional.', 'Ces informations servent uniquement à l’analyse statistique ; l’indication d’une adresse e-mail est facultative.', 'Estos datos se utilizan únicamente para el análisis estadístico; indicar un correo electrónico es opcional.')),
+      fields: [
+        { id: 'company', required: true, autocomplete: 'organization', label: L('Firma', 'Company', 'Entreprise', 'Empresa') },
+        { id: 'country', type: 'country', required: true, autocomplete: 'country-name', label: L('Land', 'Country', 'Pays', 'País') },
+        { id: 'email', type: 'email', wide: true, autocomplete: 'email',
+          label: V(L('E-Mail – falls Sie die Ergebnisse oder eine Einladung zu einem Pilotprojekt erhalten möchten', 'Email – if you would like the results or an invitation to a pilot project', 'E-mail – si vous souhaitez recevoir les résultats ou une invitation à un projet pilote', 'Correo electrónico: si desea recibir los resultados o una invitación a un proyecto piloto'),
+            L('E-Mail-Adresse für die Zusendung der Ergebnisse oder eine Einladung zu Pilotprojekten', 'Email address to receive the results or an invitation to pilot projects', 'Adresse e-mail pour recevoir les résultats ou une invitation à des projets pilotes', 'Correo electrónico para recibir los resultados o una invitación a proyectos piloto')) },
+      ],
+      note: L('Ihre Angaben verwenden wir ausschließlich zur Auswertung dieser Umfrage und geben sie nicht an Dritte weiter.', 'We use your information solely to evaluate this survey and do not share it with third parties.', 'Vos données sont utilisées uniquement pour l’analyse de cette enquête et ne sont pas transmises à des tiers.', 'Sus datos se usan únicamente para evaluar esta encuesta y no se comparten con terceros.'),
+    },
+  ],
+
+  outro: {
+    title: V(L('Vielen Dank für Ihre Teilnahme!', 'Thank you for taking part!', 'Merci de votre participation !', '¡Gracias por su participación!'),
+      L('Vielen Dank für Ihre Unterstützung.', 'Thank you for your support.', 'Merci pour votre soutien.', 'Gracias por su colaboración.')),
+    text: V(L('Ihre Antworten fließen direkt in unsere Konzepte für die Tank- und Anlagenreinigung der Zukunft ein.', 'Your answers feed directly into our concepts for the future of tank and plant cleaning.', 'Vos réponses alimentent directement nos concepts pour le nettoyage des cuves et installations de demain.', 'Sus respuestas se incorporan directamente a nuestros conceptos para la limpieza de tanques e instalaciones del futuro.'),
+      L('Ihre Angaben wurden übermittelt. Die Ergebnisse dieser Befragung bilden eine zentrale Grundlage für unsere weitere Produkt- und Serviceentwicklung.', 'Your responses have been submitted. The results of this survey form a key basis for our further product and service development.', 'Vos réponses ont été transmises. Les résultats de cette enquête constituent une base essentielle pour le développement de nos produits et services.', 'Sus respuestas se han enviado. Los resultados de esta encuesta constituyen una base fundamental para el desarrollo de nuestros productos y servicios.')),
+  },
+};
+})();
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* Umfrage-Engine – „Tank- und Anlagenreinigung der Zukunft"
+ * Liest window.SURVEY (Fragenpool) und optional window.PRESET (fixierte Auswahl der finalen Umfrage).
+ * Fragetypen: single, multi, scale (Buttons oder Slider), rank, cards, text, form
+ * Texte sind entweder {de, en, …} oder – bei Formulierungsvarianten – {s: {de, …}, p: {de, …}}.
+ */
+(() => {
+  'use strict';
+  const S = window.SURVEY;
+  const PRESET = window.PRESET || null;
+  const ALL = S.questions;
+  const LS_KEY = 'survey:' + S.id;
+  const ED_KEY = 'survey-editor:' + S.id;
+  const KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const params = new URLSearchParams(location.search);
+
+  const LANG_NAMES = { de: 'Deutsch', en: 'English', fr: 'Français', es: 'Español', it: 'Italiano', pt: 'Português', zh: '中文' };
+  const SECONDS = { single: 10, multi: 15, scale: 8, rank: 25, cards: 35, text: 45, form: 25 };
+  const TYPE_LABEL = { single: 'Einfachauswahl', multi: 'Mehrfachauswahl', scale: 'Skala', rank: 'Rangfolge', cards: 'Bewertungskarten', text: 'Freitext', form: 'Formular' };
+
+  const UI = {
+    start: { de: 'Umfrage starten', en: 'Start survey', fr: 'Commencer', es: 'Comenzar' },
+    next: { de: 'Weiter', en: 'Next', fr: 'Suivant', es: 'Siguiente' },
+    back: { de: 'Zurück', en: 'Back', fr: 'Retour', es: 'Atrás' },
+    submit: { de: 'Absenden', en: 'Submit', fr: 'Envoyer', es: 'Enviar' },
+    skip: { de: 'Überspringen', en: 'Skip', fr: 'Passer', es: 'Omitir' },
+    sending: { de: 'Wird gesendet …', en: 'Sending …', fr: 'Envoi …', es: 'Enviando …' },
+    pressEnter: { de: 'oder Enter ↵', en: 'or press Enter ↵', fr: 'ou Entrée ↵', es: 'o pulse Intro ↵' },
+    ctrlEnter: { de: '⌘/Strg + Enter = weiter', en: '⌘/Ctrl + Enter = next', fr: '⌘/Ctrl + Entrée = suivant', es: '⌘/Ctrl + Intro = siguiente' },
+    question: { de: 'Frage', en: 'Question', fr: 'Question', es: 'Pregunta' },
+    of: { de: 'von', en: 'of', fr: 'sur', es: 'de' },
+    optional: { de: 'optional', en: 'optional', fr: 'facultatif', es: 'opcional' },
+    chooseLang: { de: 'Sprache wählen', en: 'Choose your language', fr: 'Choisissez votre langue', es: 'Elija su idioma' },
+    chooseUpTo: { de: 'Bis zu {n} Antworten möglich', en: 'Up to {n} answers', fr: 'Jusqu’à {n} réponses', es: 'Hasta {n} respuestas' },
+    chooseAny: { de: 'Mehrfachauswahl möglich', en: 'Select all that apply', fr: 'Plusieurs réponses possibles', es: 'Varias respuestas posibles' },
+    other: { de: 'Sonstiges …', en: 'Other …', fr: 'Autre …', es: 'Otro …' },
+    otherPh: { de: 'Bitte kurz beschreiben', en: 'Please describe briefly', fr: 'Précisez brièvement', es: 'Descríbalo brevemente' },
+    dragHint: { de: 'Ziehen zum Sortieren – oder die Pfeile nutzen', en: 'Drag to reorder – or use the arrows', fr: 'Glissez pour trier – ou utilisez les flèches', es: 'Arrastre para ordenar – o use las flechas' },
+    most: { de: 'Am wichtigsten', en: 'Most important', fr: 'Le plus important', es: 'Lo más importante' },
+    least: { de: 'Am wenigsten wichtig', en: 'Least important', fr: 'Le moins important', es: 'Lo menos importante' },
+    up: { de: 'nach oben', en: 'move up', fr: 'monter', es: 'subir' },
+    down: { de: 'nach unten', en: 'move down', fr: 'descendre', es: 'bajar' },
+    sliderHint: { de: 'Regler bewegen', en: 'Move the slider', fr: 'Déplacez le curseur', es: 'Mueva el control' },
+    undo: { de: 'Letzte Bewertung ändern', en: 'Change last rating', fr: 'Modifier la dernière note', es: 'Cambiar la última valoración' },
+    cardsDone: { de: 'Alle Punkte bewertet – zum Ändern auf eine Bewertung klicken.', en: 'All items rated – click a rating to change it.', fr: 'Tous les éléments sont notés – cliquez sur une note pour la modifier.', es: 'Todo valorado: haga clic en una valoración para cambiarla.' },
+    testMode: { de: 'Testmodus: Es ist noch kein Empfänger hinterlegt – die Antworten wurden nur lokal in diesem Browser gespeichert.', en: 'Test mode: no endpoint configured yet – answers were only stored locally in this browser.', fr: 'Mode test : aucun destinataire configuré – les réponses ont été enregistrées localement.', es: 'Modo de prueba: no hay destino configurado; las respuestas solo se guardaron localmente.' },
+    sendError: { de: 'Die Übertragung ist fehlgeschlagen. Bitte speichern Sie Ihre Antworten als Datei.', en: 'Sending failed. Please save your answers as a file.', fr: 'L’envoi a échoué. Veuillez enregistrer vos réponses dans un fichier.', es: 'El envío falló. Guarde sus respuestas en un archivo.' },
+    saveFile: { de: 'Antworten als Datei speichern', en: 'Save answers as file', fr: 'Enregistrer les réponses', es: 'Guardar respuestas' },
+    restart: { de: 'Neu starten', en: 'Start again', fr: 'Recommencer', es: 'Reiniciar' },
+    exportLocal: { de: 'Lokal gespeicherte Antworten', en: 'Locally stored answers', fr: 'Réponses stockées localement', es: 'Respuestas guardadas localmente' },
+  };
+
+  /* ---------- Editor-Zustand (Variante, Fragenauswahl) ---------- */
+  const EDIT = !!S.editor && !(PRESET && PRESET.locked);
+  let ed = {};
+  if (EDIT) { try { ed = JSON.parse(localStorage.getItem(ED_KEY) || '{}'); } catch { /* kein Speicher */ } }
+  const saveEd = patch => { ed = { ...ed, ...patch }; try { localStorage.setItem(ED_KEY, JSON.stringify(ed)); } catch { /* egal */ } };
+  const DEFAULT_IDS = ALL.filter(q => q.default !== false).map(q => q.id);
+  let variant = (PRESET && PRESET.variant) || ed.variant || S.defaultVariant || 's';
+  let selected = new Set((PRESET && PRESET.questions) || ed.questions || DEFAULT_IDS);
+  let Q = ALL.filter(q => selected.has(q.id));
+
+  let lang = (() => {
+    const p = (params.get('lang') || '').toLowerCase();
+    if (S.languages.includes(p)) return p;
+    const nav = (navigator.languages || [navigator.language || '']).map(l => l.slice(0, 2).toLowerCase());
+    return nav.find(l => S.languages.includes(l)) || S.languages[0];
+  })();
+
+  const pickV = x => (x && typeof x === 'object' && ('s' in x || 'p' in x) ? (variant in x ? x[variant] : x.s) : x);
+  const t = (x, vars) => {
+    x = pickV(x);
+    let s = x == null ? '' : typeof x === 'string' ? x : (x[lang] ?? x.en ?? x.de ?? '');
+    if (vars) for (const k in vars) s = s.replace('{' + k + '}', vars[k]);
+    return s;
+  };
+  const tl = (x, L) => { x = pickV(x); return x == null ? '' : typeof x === 'string' ? x : (x[L] ?? x.de ?? x.en ?? ''); };
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(props || {})) {
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
+      else if (k === 'style') el.style.cssText = v;
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : document.createTextNode(c));
+    return el;
+  }
+  const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const retrigger = (el, cls) => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+  const keyBadge = i => h('span', { class: 'key' }, KEYS[i]);
+  const ico = o => (o.icon ? h('span', { class: 'ico' }, o.icon) : null);
+  const minutes = () => Math.max(1, Math.round(Q.reduce((s, q) => s + (SECONDS[q.type] || 10), 0) / 60));
+
+  const state = { step: -1, answers: {}, startedAt: null, sending: false, result: null };
+  const stage = document.getElementById('stage');
+  const nav = document.getElementById('nav');
+  const bar = document.querySelector('#progress > i');
+  const counter = document.getElementById('counter');
+  const langBox = document.getElementById('langs');
+  let advanceTimer = null;
+
+  const get = q => state.answers[q.id];
+  const set = (q, v, silent) => { state.answers[q.id] = v; if (!silent) refreshNav(); };
+  const autoNext = () => { clearTimeout(advanceTimer); advanceTimer = setTimeout(next, 420); };
+
+  /* ---------- Fragetypen ---------- */
+  const TYPES = {
+    single(q) {
+      const wrap = h('div', { class: 'opts ' + (q.layout || 'list'), role: 'radiogroup' });
+      q.options.forEach((o, i) => {
+        const b = h('button', {
+          type: 'button', class: 'opt' + (get(q) === o.id ? ' sel' : ''), role: 'radio', 'aria-checked': String(get(q) === o.id), 'data-key': KEYS[i],
+          onclick: () => {
+            set(q, o.id);
+            wrap.querySelectorAll('.opt').forEach(x => { x.classList.toggle('sel', x === b); x.setAttribute('aria-checked', String(x === b)); });
+            retrigger(b, 'pop');
+            if (q.autoNext !== false) autoNext();
+          },
+        }, keyBadge(i), ico(o), h('span', { class: 'lbl' }, t(o.label), o.desc ? h('small', null, t(o.desc)) : null));
+        wrap.append(b);
+      });
+      return wrap;
+    },
+
+    multi(q) {
+      const a = get(q) || { sel: [], other: '' };
+      set(q, a, true);
+      const items = [...q.options];
+      if (q.other) items.push({ id: '__other', label: UI.other });
+      const wrap = h('div', { class: 'opts ' + (q.layout || 'grid') });
+      let otherInput = null;
+      const sync = () => {
+        wrap.querySelectorAll('.opt').forEach(b => {
+          const on = a.sel.includes(b.dataset.id);
+          b.classList.toggle('sel', on);
+          b.setAttribute('aria-pressed', String(on));
+          b.classList.toggle('dim', !!q.max && a.sel.length >= q.max && !on);
+        });
+        if (otherInput) otherInput.hidden = !a.sel.includes('__other');
+        refreshNav();
+      };
+      items.forEach((o, i) => {
+        const b = h('button', {
+          type: 'button', class: 'opt', 'data-id': o.id, 'data-key': KEYS[i],
+          onclick: () => {
+            if (a.sel.includes(o.id)) a.sel = a.sel.filter(x => x !== o.id);
+            else {
+              if (o.exclusive) a.sel = [];
+              else a.sel = a.sel.filter(x => !items.find(y => y.id === x)?.exclusive);
+              if (q.max && a.sel.length >= q.max) { retrigger(b, 'shake'); return; }
+              a.sel.push(o.id);
+              retrigger(b, 'pop');
+              if (o.id === '__other') setTimeout(() => otherInput.focus(), 60);
+            }
+            sync();
+          },
+        }, keyBadge(i), ico(o), h('span', { class: 'lbl' }, t(o.label)));
+        wrap.append(b);
+      });
+      const out = h('div', null, wrap);
+      if (q.other) {
+        otherInput = h('input', { class: 'field', type: 'text', placeholder: t(UI.otherPh), maxlength: 200 });
+        otherInput.value = a.other || '';
+        otherInput.addEventListener('input', () => { a.other = otherInput.value; refreshNav(); });
+        out.append(otherInput);
+      }
+      sync();
+      return out;
+    },
+
+    scale(q) {
+      if (q.slider) return slider(q);
+      const a = get(q);
+      const row = h('div', { class: 'nps', style: `--n:${q.max - q.min + 1}` });
+      for (let v = q.min; v <= q.max; v++) {
+        const hue = Math.round(((v - q.min) / (q.max - q.min)) * 125);
+        row.append(h('button', {
+          type: 'button', class: 'npsbtn' + (a === v ? ' sel' : ''), style: `--h:${hue}`, 'data-num': v,
+          onclick: () => {
+            set(q, v);
+            row.querySelectorAll('.npsbtn').forEach(x => x.classList.toggle('sel', +x.dataset.num === v));
+            autoNext();
+          },
+        }, String(v)));
+      }
+      return h('div', { class: 'scalewrap' }, row, h('div', { class: 'ends' }, h('span', null, t(q.minLabel)), h('span', null, t(q.maxLabel))));
+    },
+
+    rank(q) {
+      let order = get(q);
+      if (!order) { order = shuffle(q.items.map(i => i.id)); set(q, order, true); }
+      const byId = Object.fromEntries(q.items.map(i => [i.id, i]));
+      const list = h('ol', { class: 'rank' });
+      const save = () => {
+        state.answers[q.id] = [...list.children].map(li => li.dataset.id);
+        [...list.children].forEach((li, i) => { li.querySelector('.num').textContent = i + 1; });
+      };
+      const move = (li, d) => {
+        const sib = d < 0 ? li.previousElementSibling : li.nextElementSibling;
+        if (!sib) return;
+        list.insertBefore(d < 0 ? li : sib, d < 0 ? sib : li);
+        retrigger(li, 'flash');
+        save();
+      };
+      order.forEach((id, i) => {
+        const it = byId[id];
+        const li = h('li', { class: 'rankitem', 'data-id': id },
+          h('span', { class: 'grip', 'aria-hidden': 'true' }, '⋮⋮'),
+          h('span', { class: 'num' }, i + 1),
+          ico(it),
+          h('span', { class: 'lbl' }, t(it.label)),
+          h('span', { class: 'arrows' },
+            h('button', { type: 'button', 'aria-label': t(UI.up), onclick: () => move(li, -1) }, '▲'),
+            h('button', { type: 'button', 'aria-label': t(UI.down), onclick: () => move(li, 1) }, '▼')));
+        li.addEventListener('pointerdown', e => {
+          if (e.target.closest('button') || e.button > 0) return;
+          e.preventDefault();
+          li.setPointerCapture(e.pointerId);
+          li.classList.add('dragging');
+          const onMove = ev => {
+            const sibs = [...list.children].filter(x => x !== li);
+            const idx = sibs.filter(s => { const r = s.getBoundingClientRect(); return ev.clientY > r.top + r.height / 2; }).length;
+            const ref = sibs[idx] || null;
+            if (li.nextElementSibling !== ref) { list.insertBefore(li, ref); save(); }
+          };
+          const onUp = () => {
+            li.classList.remove('dragging');
+            li.removeEventListener('pointermove', onMove);
+            li.removeEventListener('pointerup', onUp);
+            li.removeEventListener('pointercancel', onUp);
+          };
+          li.addEventListener('pointermove', onMove);
+          li.addEventListener('pointerup', onUp);
+          li.addEventListener('pointercancel', onUp);
+        });
+        list.append(li);
+      });
+      return h('div', null, h('div', { class: 'rankend' }, '▲ ', t(UI.most)), list, h('div', { class: 'rankend bottom' }, '▼ ', t(UI.least)));
+    },
+
+    cards(q) {
+      const a = get(q) || {};
+      set(q, a, true);
+      const box = h('div', { class: 'cardsq' });
+      const draw = () => {
+        box.replaceChildren();
+        const idx = q.items.findIndex(it => !(it.id in a));
+        if (idx === -1) {
+          box.append(
+            h('ul', { class: 'cardsum' }, ...q.items.map(it => {
+              const o = q.scaleOpts.find(x => x.id === a[it.id]);
+              const n = q.scaleOpts.indexOf(o);
+              return h('li', null, ico(it), h('span', { class: 'lbl' }, t(it.label)),
+                h('button', { type: 'button', class: 'chip c' + n, onclick: () => { delete a[it.id]; draw(); refreshNav(); } }, t(o.label)));
+            })),
+            h('p', { class: 'qhint' }, t(UI.cardsDone)));
+          refreshNav();
+          return;
+        }
+        const it = q.items[idx];
+        const stack = h('div', { class: 'stack' });
+        for (let k = Math.min(2, q.items.length - 1 - idx); k >= 1; k--) stack.append(h('div', { class: 'idea ghost g' + k }));
+        const card = h('div', { class: 'idea live' },
+          h('div', { class: 'idea-n' }, `${idx + 1} / ${q.items.length}`),
+          it.icon ? h('div', { class: 'idea-ico' }, it.icon) : null,
+          h('h3', null, t(it.label)),
+          it.desc ? h('p', null, t(it.desc)) : null);
+        stack.append(card);
+        const votes = h('div', { class: 'votes' }, ...q.scaleOpts.map((o, i) => h('button', {
+          type: 'button', class: 'vote v' + i, 'data-num': i + 1,
+          onclick: () => {
+            if (card.classList.contains('out')) return;
+            a[it.id] = o.id;
+            card.classList.add('out', 'out-' + i);
+            setTimeout(() => { draw(); refreshNav(); }, 330);
+          },
+        }, h('span', { class: 'k' }, i + 1), t(o.label))));
+        box.append(stack, votes);
+        if (idx > 0) box.append(h('button', { type: 'button', class: 'linkbtn', onclick: () => { delete a[q.items[idx - 1].id]; draw(); refreshNav(); } }, '↶ ', t(UI.undo)));
+      };
+      draw();
+      return box;
+    },
+
+    text(q) {
+      const max = q.maxlength || 1500;
+      const ta = h('textarea', { class: 'field big', rows: q.rows || 4, placeholder: t(q.placeholder), maxlength: max, autofocus: true });
+      ta.value = get(q) || '';
+      const cnt = h('span', { class: 'count' });
+      const wrap = h('div', { class: 'textwrap' + (q.wish ? ' wish' : '') });
+      let last = 0;
+      const upd = sparkle => {
+        set(q, ta.value);
+        cnt.textContent = `${ta.value.length} / ${max}`;
+        if (sparkle && q.wish && Date.now() - last > 90) { last = Date.now(); spark(wrap); }
+      };
+      ta.addEventListener('input', () => upd(true));
+      upd(false);
+      wrap.append(q.wish ? h('div', { class: 'wand', 'aria-hidden': 'true' }, '🪄') : null, ta,
+        h('div', { class: 'below' }, h('span', { class: 'hint' }, t(UI.ctrlEnter)), cnt));
+      return wrap;
+    },
+
+    form(q) {
+      const a = get(q) || {};
+      set(q, a, true);
+      const grid = h('div', { class: 'formgrid' });
+      q.fields.forEach((f, i) => {
+        const input = f.type === 'textarea'
+          ? h('textarea', { class: 'field', rows: 3 })
+          : h('input', { class: 'field', type: f.type === 'email' ? 'email' : 'text', autocomplete: f.autocomplete || 'off', list: f.type === 'country' ? 'countries' : null });
+        input.id = 'f_' + f.id;
+        input.value = a[f.id] || '';
+        if (f.placeholder) input.placeholder = t(f.placeholder);
+        if (i === 0) input.setAttribute('autofocus', '');
+        input.addEventListener('input', () => { a[f.id] = input.value; refreshNav(); });
+        grid.append(h('label', { class: 'fld' + (f.wide ? ' wide' : ''), for: input.id },
+          h('span', null, t(f.label), f.required ? null : h('em', null, ' · ' + t(UI.optional))), input));
+      });
+      if (q.fields.some(f => f.type === 'country')) grid.append(h('datalist', { id: 'countries' }, ...COUNTRIES.map(c => h('option', { value: c }))));
+      return h('div', null, grid, q.note ? h('p', { class: 'note' }, t(q.note)) : null);
+    },
+  };
+
+  function slider(q) {
+    const a = get(q);
+    const unit = q.unit || '';
+    const val = h('output', { class: 'bigval' + (a == null ? ' idle' : '') }, a == null ? '–' : a + unit);
+    const input = h('input', { type: 'range', min: q.min, max: q.max, step: q.step || 1, class: 'range' + (a == null ? ' idle' : ''), 'aria-label': t(q.title) });
+    input.value = a ?? Math.round((q.min + q.max) / 2);
+    const hint = h('p', { class: 'qhint center' }, t(UI.sliderHint));
+    hint.hidden = a != null;
+    const paint = () => input.style.setProperty('--p', ((input.value - q.min) / (q.max - q.min)) * 100 + '%');
+    const commit = () => {
+      set(q, +input.value);
+      val.textContent = input.value + unit;
+      val.classList.remove('idle'); input.classList.remove('idle');
+      hint.hidden = true;
+      paint();
+    };
+    input.addEventListener('input', commit);
+    input.addEventListener('pointerup', commit);
+    input.addEventListener('keyup', commit);
+    paint();
+    return h('div', { class: 'sliderwrap' }, val, input,
+      h('div', { class: 'ends' }, h('span', null, t(q.minLabel)), h('span', null, t(q.maxLabel))), hint);
+  }
+
+  /* ---------- Validierung ---------- */
+  function isEmpty(q) {
+    const a = get(q);
+    if (a == null || a === '') return true;
+    if (q.type === 'multi') return !a.sel.length;
+    if (q.type === 'text') return !a.trim();
+    if (q.type === 'form') return !Object.values(a).some(v => String(v).trim());
+    if (q.type === 'cards') return !Object.keys(a).length;
+    return false;
+  }
+  function valid(q) {
+    if (q.optional && isEmpty(q)) return true;
+    const a = get(q);
+    switch (q.type) {
+      case 'single': return a != null;
+      case 'scale': return a != null;
+      case 'multi': return a.sel.length > 0 && (!a.sel.includes('__other') || !!a.other.trim());
+      case 'rank': return Array.isArray(a);
+      case 'cards': return q.items.every(it => it.id in a);
+      case 'text': return (a || '').trim().length >= (q.minLength || 2);
+      case 'form': return q.fields.every(f => {
+        const v = (a[f.id] || '').trim();
+        if (f.required && !v) return false;
+        if (f.type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return false;
+        return true;
+      });
+    }
+    return true;
+  }
+
+  /* ---------- Bildschirme ---------- */
+  function welcome() {
+    const W = S.welcome;
+    const vars = { n: Q.length, min: minutes() };
+    const out = [
+      h('div', { class: 'eyebrow' }, t(W.eyebrow)),
+      h('h1', { class: 'hero' }, t(W.title)),
+      h('p', { class: 'lead' }, t(W.lead)),
+      h('div', { class: 'meta' }, ...W.meta.map(m => h('span', { class: 'pill' }, t(m, vars)))),
+    ];
+    if (S.languages.length > 1) {
+      out.push(h('div', { class: 'langpick' }, h('span', { class: 'muted' }, t(UI.chooseLang)),
+        h('div', { class: 'langbtns' }, ...S.languages.map(l => h('button', {
+          type: 'button', class: 'langbtn' + (l === lang ? ' sel' : ''), lang: l, onclick: () => { lang = l; render(0); },
+        }, LANG_NAMES[l] || l.toUpperCase())))));
+    }
+    out.push(h('div', { class: 'cta' },
+      h('button', { type: 'button', class: 'btn primary big', autofocus: true, disabled: Q.length ? null : true, onclick: start }, t(UI.start), ' →'),
+      h('span', { class: 'hint' }, t(UI.pressEnter))));
+    if (W.note) out.push(h('p', { class: 'note' }, t(W.note)));
+    if (params.has('export')) out.push(exportBox());
+    return out;
+  }
+
+  function hintFor(q) {
+    if (q.type === 'multi') return q.max ? t(UI.chooseUpTo, { n: q.max }) : t(UI.chooseAny);
+    if (q.type === 'rank') return t(UI.dragHint);
+    return '';
+  }
+
+  function question(q) {
+    const hint = hintFor(q);
+    return [
+      h('div', { class: 'eyebrow' }, `${t(UI.question)} ${state.step + 1} ${t(UI.of)} ${Q.length}`, q.optional ? h('span', { class: 'tag' }, t(UI.optional)) : null),
+      h('h2', { class: 'qtitle' }, t(q.title)),
+      q.sub ? h('p', { class: 'qsub' }, t(q.sub)) : null,
+      hint ? h('p', { class: 'qhint' }, hint) : null,
+      h('div', { class: 'qbody' }, TYPES[q.type](q)),
+    ];
+  }
+
+  function outro() {
+    const r = state.result || {};
+    const O = S.outro;
+    const out = [h('div', { class: 'done-badge' }, '✓'), h('h1', { class: 'hero' }, t(O.title)), h('p', { class: 'lead' }, t(O.text))];
+    if (r.test || !r.ok) {
+      out.push(h('div', { class: 'testbox' },
+        h('p', null, r.test ? t(UI.testMode) : `${t(UI.sendError)} (${r.err})`),
+        r.payload ? h('button', { type: 'button', class: 'btn ghost', onclick: () => download([r.payload], 'json') }, '⬇ ', t(UI.saveFile)) : null));
+    }
+    if (params.has('kiosk')) {
+      out.push(h('div', { class: 'cta' }, h('button', { type: 'button', class: 'btn primary', onclick: reset }, '↻ ', t(UI.restart))));
+      clearTimeout(advanceTimer);
+      advanceTimer = setTimeout(reset, 25000);
+    }
+    if (S.confetti !== false) setTimeout(confetti, 250);
+    return out;
+  }
+
+  function exportBox() {
+    let rows = [];
+    try { rows = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { /* leer */ }
+    return h('div', { class: 'testbox' }, h('p', null, `${t(UI.exportLocal)}: ${rows.length}`),
+      h('div', { class: 'cta' },
+        h('button', { type: 'button', class: 'btn ghost', onclick: () => download(rows, 'json') }, '⬇ JSON'),
+        h('button', { type: 'button', class: 'btn ghost', onclick: () => download(rows, 'csv') }, '⬇ CSV (Excel)')));
+  }
+
+  /* ---------- Ablauf ---------- */
+  function render(dir = 1) {
+    clearTimeout(advanceTimer);
+    document.documentElement.lang = lang;
+    document.title = t(S.welcome.title);
+    renderLangs();
+    const screen = h('section', { class: 'screen ' + (dir < 0 ? 'from-top' : 'from-bottom') });
+    if (state.step < 0) screen.append(...welcome().filter(Boolean));
+    else if (state.step >= Q.length) screen.append(...outro());
+    else screen.append(...question(Q[state.step]).filter(Boolean));
+    stage.replaceChildren(screen);
+    renderNav();
+    updateProgress();
+    renderCaption();
+    if (EDIT) drawEditor();
+    const f = screen.querySelector('[autofocus]');
+    if (f && matchMedia('(pointer:fine)').matches) setTimeout(() => f.focus({ preventScroll: true }), 380);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderCaption() {
+    const host = document.getElementById('visual');
+    if (!host || !S.sceneCaption) return;
+    let cap = document.getElementById('scene-cap');
+    if (!cap) { cap = h('div', { id: 'scene-cap' }); host.append(cap); }
+    cap.textContent = t(S.sceneCaption);
+  }
+
+  function renderLangs() {
+    langBox.replaceChildren();
+    if (S.languages.length < 2) return;
+    S.languages.forEach(l => langBox.append(h('button', {
+      type: 'button', class: l === lang ? 'sel' : '', lang: l, title: LANG_NAMES[l] || l,
+      onclick: () => { lang = l; render(0); },
+    }, l.toUpperCase())));
+  }
+
+  function renderNav() {
+    nav.replaceChildren();
+    const inQ = state.step >= 0 && state.step < Q.length;
+    nav.hidden = !inQ;
+    if (!inQ) return;
+    nav.append(
+      h('button', { type: 'button', class: 'btn ghost', onclick: back }, '← ', t(UI.back)),
+      h('div', { class: 'navright' }, h('span', { class: 'hint' }, t(UI.pressEnter)),
+        h('button', { type: 'button', class: 'btn primary', id: 'nextbtn', onclick: next })));
+    refreshNav();
+  }
+
+  function refreshNav() {
+    const b = document.getElementById('nextbtn');
+    const q = Q[state.step];
+    if (!b || !q || state.sending) return;
+    const last = state.step === Q.length - 1;
+    b.disabled = !valid(q);
+    b.textContent = last ? t(UI.submit) + ' ✓' : (q.optional && isEmpty(q) ? t(UI.skip) : t(UI.next)) + ' →';
+  }
+
+  function updateProgress() {
+    const n = Q.length, s = state.step;
+    const f = s < 0 ? 0 : s >= n ? 1 : s / n;
+    bar.style.width = f * 100 + '%';
+    counter.textContent = s >= 0 && s < n ? `${s + 1} / ${n}` : '';
+    window.dispatchEvent(new CustomEvent('survey:progress', { detail: { f, active: s >= 0 } }));
+  }
+
+  function go(i, dir) { state.step = i; render(dir); }
+  function start() { if (!Q.length) return; state.startedAt = state.startedAt || Date.now(); go(0, 1); }
+  function back() { go(state.step - 1, -1); }
+  function next() {
+    const q = Q[state.step];
+    if (!q) return;
+    if (!valid(q)) { retrigger(stage.querySelector('.qbody'), 'shake'); return; }
+    if (state.step === Q.length - 1) submit();
+    else go(state.step + 1, 1);
+  }
+  function reset() {
+    state.step = -1; state.answers = {}; state.startedAt = null; state.result = null;
+    render(-1);
+  }
+
+  /* ---------- Editor-Sidebar ---------- */
+  function applySelection(ids) {
+    const cur = Q[state.step];
+    const onOutro = state.step >= Q.length;
+    selected = new Set(ids);
+    Q = ALL.filter(q => selected.has(q.id));
+    saveEd({ questions: Q.map(q => q.id) });
+    if (onOutro) state.step = Q.length;
+    else if (state.step >= 0) {
+      const idx = Q.indexOf(cur);
+      state.step = idx >= 0 ? idx : Q.length ? Math.min(state.step, Q.length - 1) : -1;
+    }
+    render(0);
+  }
+
+  function setEditorOpen(open) {
+    document.body.classList.toggle('editor-open', open);
+    saveEd({ open });
+  }
+
+  function buildEditor() {
+    document.body.append(
+      h('aside', { id: 'editor', 'aria-label': 'Umfrage-Editor' }),
+      h('button', { id: 'editor-toggle', type: 'button', onclick: () => setEditorOpen(true), title: 'Editor öffnen' }, h('span', null, 'Fragen & Formulierung')));
+    setEditorOpen(ed.open !== false);
+  }
+
+  function drawEditor() {
+    const panel = document.getElementById('editor');
+    if (!panel) return;
+    const oldList = panel.querySelector('.ed-list');
+    const scroll = oldList ? oldList.scrollTop : 0;
+    const link = (label, fn) => h('button', { type: 'button', class: 'ed-link', onclick: fn }, label);
+    const V = S.variants || {};
+    const list = h('ol', { class: 'ed-list' }, ...ALL.map(q => {
+      const on = selected.has(q.id);
+      const pos = Q.indexOf(q);
+      const cb = h('input', { type: 'checkbox', 'aria-label': 'Frage einbeziehen' });
+      cb.checked = on;
+      cb.addEventListener('change', () => applySelection(cb.checked ? [...selected, q.id] : [...selected].filter(id => id !== q.id)));
+      return h('li', { class: (on ? 'on' : 'off') + (on && pos === state.step ? ' cur' : '') },
+        h('label', { class: 'ed-check' }, cb),
+        h('button', {
+          type: 'button', class: 'ed-q', title: 'In der Vorschau anzeigen',
+          onclick: () => {
+            if (!on) applySelection([...selected, q.id]);
+            state.startedAt = state.startedAt || Date.now();
+            go(Q.indexOf(q), 1);
+          },
+        },
+        h('span', { class: 'ed-num' }, on ? pos + 1 : '·'),
+        h('span', { class: 'ed-txt' }, h('span', { class: 'ed-title' }, tl(q.title, 'de')),
+          h('span', { class: 'ed-meta' }, TYPE_LABEL[q.type], q.optional ? ' · optional' : '', q.default === false ? h('em', { class: 'ed-new' }, 'neu') : null))));
+    }));
+    panel.replaceChildren(
+      h('div', { class: 'ed-head' },
+        h('div', null, h('b', null, 'Umfrage-Editor'), h('small', null, 'Nur für das Projektteam – nicht Teil der finalen Umfrage')),
+        h('button', { type: 'button', class: 'ed-x', 'aria-label': 'Editor einklappen', title: 'Einklappen', onclick: () => setEditorOpen(false) }, '‹')),
+      Object.keys(V).length ? h('div', { class: 'ed-sec' },
+        h('div', { class: 'ed-label' }, 'Formulierung'),
+        h('div', { class: 'seg' }, ...Object.entries(V).map(([k, v]) => h('button', {
+          type: 'button', class: k === variant ? 'sel' : '', onclick: () => { variant = k; saveEd({ variant }); render(0); },
+        }, v.label))),
+        V[variant] ? h('p', { class: 'ed-hint' }, V[variant].hint) : null) : null,
+      h('div', { class: 'ed-sec ed-grow' },
+        h('div', { class: 'ed-row' },
+          h('div', { class: 'ed-label' }, `Fragen · ${Q.length} von ${ALL.length} · ca. ${minutes()} Min.`),
+          h('div', { class: 'ed-links' }, link('Standard', () => applySelection(DEFAULT_IDS)), link('Alle', () => applySelection(ALL.map(q => q.id))), link('Keine', () => applySelection([])))),
+        list),
+      h('div', { class: 'ed-foot' },
+        h('button', { type: 'button', class: 'btn primary', disabled: Q.length ? null : true, onclick: exportFinal }, '⬇ Finale Umfrage herunterladen'),
+        h('p', { class: 'ed-hint' }, `Erzeugt eine HTML-Datei mit Formulierung „${V[variant]?.label || ''}“ und den ${Q.length} gewählten Fragen – ohne Editor, bereit zum Versand.`)));
+    list.scrollTop = scroll;
+  }
+
+  function exportFinal() {
+    const doc = document.documentElement.cloneNode(true);
+    const $$ = sel => doc.querySelector(sel);
+    ['#stage', '#nav', '#langs', '#counter', '#visual'].forEach(sel => $$(sel)?.replaceChildren());
+    $$('#nav')?.setAttribute('hidden', '');
+    $$('#visual')?.removeAttribute('class');
+    doc.querySelectorAll('#editor, #editor-toggle, .drop, .spark').forEach(el => el.remove());
+    $$('body').classList.remove('editor-open');
+    const barEl = $$('#progress > i');
+    if (barEl) barEl.removeAttribute('style');
+    $$('#preset').textContent = `window.PRESET = ${JSON.stringify({ locked: true, variant, questions: Q.map(q => q.id) })};`;
+    const html = '<!doctype html>\n' + doc.outerHTML;
+    const a = h('a', { href: URL.createObjectURL(new Blob([html], { type: 'text/html' })), download: `${S.exportName || 'Umfrage_final'}_${(S.variants?.[variant]?.label || variant)}_${Q.length}-Fragen.html` });
+    document.body.append(a); a.click(); a.remove();
+  }
+
+  /* ---------- Absenden & Export ---------- */
+  function readable(q, a, L) {
+    if (a == null) return '';
+    const lab = (list, id) => tl(list.find(o => o.id === id)?.label, L);
+    switch (q.type) {
+      case 'single': return lab(q.options, a);
+      case 'multi': return a.sel.map(id => (id === '__other' ? `${tl(UI.other, L).replace(' …', '')}: ${a.other}` : lab(q.options, id))).join('; ');
+      case 'rank': return a.map((id, i) => `${i + 1}. ${lab(q.items, id)}`).join(' | ');
+      case 'cards': return Object.fromEntries(q.items.filter(it => it.id in a).map(it => [tl(it.label, L), lab(q.scaleOpts, a[it.id])]));
+      case 'form': return Object.fromEntries(q.fields.map(f => [tl(f.label, L), a[f.id] || '']));
+      default: return a;
+    }
+  }
+
+  function buildPayload() {
+    const L = S.analysisLang || 'de';
+    return {
+      survey: S.id,
+      variant,
+      lang,
+      submittedAt: new Date().toISOString(),
+      durationSec: Math.round((Date.now() - (state.startedAt || Date.now())) / 1000),
+      answers: Object.fromEntries(Q.map(q => [q.id, state.answers[q.id] ?? null])),
+      readable: Object.fromEntries(Q.map(q => [`[${q.id}] ${tl(q.title, L)}`, readable(q, state.answers[q.id], L)])),
+    };
+  }
+
+  async function submit() {
+    if (state.sending) return;
+    state.sending = true;
+    const b = document.getElementById('nextbtn');
+    if (b) { b.disabled = true; b.textContent = t(UI.sending); }
+    const payload = buildPayload();
+    let ok = false, err = null;
+    if (S.endpoint) {
+      try {
+        const r = await fetch(S.endpoint, { method: 'POST', headers: { 'Content-Type': S.endpointContentType || 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+        ok = r.ok;
+        if (!ok) err = 'HTTP ' + r.status;
+      } catch (e) { err = e.message; }
+    }
+    try {
+      const rows = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+      rows.push(payload);
+      localStorage.setItem(LS_KEY, JSON.stringify(rows));
+    } catch { /* privater Modus o. Ä. */ }
+    state.result = { ok, err, payload, test: !S.endpoint };
+    state.sending = false;
+    go(Q.length, 1);
+  }
+
+  function toCSV(rows) {
+    const cols = [...new Set(rows.flatMap(r => Object.keys(r.readable || {})))];
+    const esc = v => {
+      v = v == null ? '' : typeof v === 'object' ? Object.entries(v).map(([k, x]) => `${k}: ${x}`).join(' | ') : String(v);
+      return '"' + v.replace(/"/g, '""') + '"';
+    };
+    const head = ['submittedAt', 'lang', 'variant', 'durationSec', ...cols];
+    return '﻿' + [head.map(esc).join(';'), ...rows.map(r => [r.submittedAt, r.lang, r.variant, r.durationSec, ...cols.map(c => r.readable[c])].map(esc).join(';'))].join('\r\n');
+  }
+
+  function download(rows, kind) {
+    const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+    const body = kind === 'csv' ? toCSV(rows) : JSON.stringify(rows.length === 1 ? rows[0] : rows, null, 2);
+    const blob = new Blob([body], { type: kind === 'csv' ? 'text/csv;charset=utf-8' : 'application/json' });
+    const a = h('a', { href: URL.createObjectURL(blob), download: `${S.id}-${stamp}.${kind}` });
+    document.body.append(a); a.click(); a.remove();
+  }
+
+  /* ---------- Effekte ---------- */
+  function spark(host) {
+    const s = h('span', { class: 'spark', style: `left:${10 + Math.random() * 80}%;top:${20 + Math.random() * 60}%` }, ['✦', '✧', '·', '⋆'][Math.floor(Math.random() * 4)]);
+    host.append(s);
+    setTimeout(() => s.remove(), 900);
+  }
+
+  function confetti() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const colors = S.confetti || ['#36d6ff', '#7cf5c8', '#ffffff', '#1e88ff'];
+    for (let i = 0; i < 70; i++) {
+      const d = h('span', {
+        class: 'drop',
+        style: `left:${Math.random() * 100}vw;background:${colors[i % colors.length]};animation-duration:${2.2 + Math.random() * 2.2}s;animation-delay:${Math.random() * 0.6}s;--r:${Math.random() * 360}deg;transform:scale(${0.6 + Math.random() * 0.8})`,
+      });
+      document.body.append(d);
+      setTimeout(() => d.remove(), 5200);
+    }
+  }
+
+  /* ---------- Tastatur ---------- */
+  document.addEventListener('keydown', e => {
+    if (state.sending || e.target.closest?.('#editor')) return;
+    const tag = e.target.tagName;
+    if (e.key === 'Enter') {
+      // Enter auf Antwort-Buttons = weiter (Auswahl per Klick, Buchstabe oder Leertaste)
+      if (tag === 'BUTTON' && !e.target.closest('.opt, .npsbtn')) return;
+      if (tag === 'TEXTAREA' && !(e.metaKey || e.ctrlKey)) return;
+      e.preventDefault();
+      if (state.step < 0) start();
+      else if (state.step < Q.length) next();
+      return;
+    }
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key.length === 1 ? e.key.toUpperCase() : '';
+    if (!/^[A-Z0-9]$/.test(k)) return;
+    const el = stage.querySelector(`[data-key="${k}"]`) || stage.querySelector(`[data-num="${k}"]`);
+    if (el) el.click();
+  });
+
+  const COUNTRIES = ['Germany', 'Austria', 'Switzerland', 'France', 'Italy', 'Spain', 'Portugal', 'Netherlands', 'Belgium', 'Luxembourg', 'Denmark', 'Sweden', 'Norway', 'Finland', 'Poland', 'Czech Republic', 'Slovakia', 'Hungary', 'Romania', 'Bulgaria', 'Croatia', 'Slovenia', 'Serbia', 'Greece', 'Turkey', 'Ireland', 'United Kingdom', 'Ukraine', 'Lithuania', 'Latvia', 'Estonia', 'United States', 'Canada', 'Mexico', 'Brazil', 'Argentina', 'Chile', 'Colombia', 'Peru', 'China', 'India', 'Japan', 'South Korea', 'Taiwan', 'Singapore', 'Malaysia', 'Thailand', 'Vietnam', 'Indonesia', 'Philippines', 'Australia', 'New Zealand', 'South Africa', 'Egypt', 'Morocco', 'Nigeria', 'Kenya', 'Saudi Arabia', 'United Arab Emirates', 'Israel', 'Qatar'];
+
+  if (EDIT) buildEditor();
+  render(1);
+})();
+
+</script>
+<script>
+/* 3D-Hintergrundszene: Prozessanlage aus Edelstahltanks mit Rohrleitungen.
+ * Der vordere Tank ist aufgeschnitten; ein rotierender Zielstrahlreiniger reinigt die Innenwand,
+ * die Verschmutzung wird an den Auftreffpunkten der Strahlen live abgetragen. Nicht interaktiv.
+ */
+(() => {
+  'use strict';
+  const host = document.getElementById('visual');
+  if (!host || !window.THREE || !window.SURVEY || window.SURVEY.visual !== 'scene') return;
+  const T = window.THREE;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let renderer;
+  try { renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+  catch { return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  renderer.outputEncoding = T.sRGBEncoding;
+  renderer.toneMapping = T.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.92;
+  renderer.domElement.className = 'scene3d';
+  host.prepend(renderer.domElement);
+
+  const scene = new T.Scene();
+  scene.fog = new T.Fog(0x041427, 13, 28);
+  const camera = new T.PerspectiveCamera(30, 1, 0.1, 100);
+
+  /* Umgebung für Reflexionen: dunkle Halle mit Lichtbändern */
+  const pmrem = new T.PMREMGenerator(renderer);
+  const env = new T.Scene();
+  env.background = new T.Color(0x0a1a2e);
+  const panel = (w, hgt, x, y, z, color, k) => {
+    const m = new T.Mesh(new T.PlaneGeometry(w, hgt), new T.MeshBasicMaterial({ color: new T.Color(color).multiplyScalar(k), side: T.DoubleSide }));
+    m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m);
+  };
+  panel(14, 1.6, 0, 9, 0, 0xffffff, 3.2);
+  panel(1.2, 10, -9, 3, 3, 0xcfe8ff, 2.2);
+  panel(1.2, 10, 9, 3, -3, 0xffffff, 1.8);
+  panel(10, 3, 0, 2, 11, 0xf2f6fa, 1.0);
+  panel(24, 4, 0, 0, -12, 0x2aa8d8, 0.35);
+  panel(40, 40, 0, -8, 0, 0x08121f, 1);
+  scene.environment = pmrem.fromScene(env, 0.04).texture;
+
+  /* Materialien */
+  const steel = new T.MeshStandardMaterial({ color: 0xc9cdd1, metalness: 1, roughness: 0.24 });
+  const steelSatin = new T.MeshStandardMaterial({ color: 0xb4b9be, metalness: 1, roughness: 0.36 });
+  const steelInner = new T.MeshStandardMaterial({ color: 0xb4c0cc, metalness: 0.9, roughness: 0.3, side: T.DoubleSide });
+  const darkMetal = new T.MeshStandardMaterial({ color: 0x2b3a4c, metalness: 0.6, roughness: 0.45 });
+  const accent = new T.MeshStandardMaterial({ color: 0x1b8fd6, metalness: 0.3, roughness: 0.35, emissive: 0x0b3a5c, emissiveIntensity: 0.4 });
+
+  /* Licht */
+  scene.add(new T.HemisphereLight(0xcfe6ff, 0x08131f, 0.45));
+  const key = new T.DirectionalLight(0xffffff, 1.3); key.position.set(6, 9, 7); scene.add(key);
+  const rim = new T.DirectionalLight(0x8fd4ff, 0.55); rim.position.set(-7, 4, -6); scene.add(rim);
+
+  /* Boden */
+  const floor = new T.Mesh(new T.PlaneGeometry(80, 80), new T.MeshStandardMaterial({ color: 0x0a1626, metalness: 0.35, roughness: 0.6 }));
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -3; scene.add(floor);
+  const grid = new T.GridHelper(60, 60, 0x1f5b8a, 0x14365a);
+  grid.position.y = -2.995; grid.material.transparent = true; grid.material.opacity = 0.32; scene.add(grid);
+  const glowTex = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 256;
+    const g = c.getContext('2d'); const rg = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+    rg.addColorStop(0, 'rgba(54,214,255,0.55)'); rg.addColorStop(1, 'rgba(54,214,255,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, 256, 256);
+    return new T.CanvasTexture(c);
+  })();
+  const glow = new T.Mesh(new T.PlaneGeometry(7, 7), new T.MeshBasicMaterial({ map: glowTex, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
+  glow.rotation.x = -Math.PI / 2; glow.position.y = -2.99; scene.add(glow);
+
+  /* Tankprofil (Klöpperboden oben, Konus unten), gleichmäßig nach Bogenlänge abgetastet */
+  const RAW = [[0, -1.92], [0.09, -1.92], [0.09, -1.78], [0.16, -1.72], [1, -1.2], [1, 1.3], [0.985, 1.42], [0.93, 1.56], [0.8, 1.7], [0.58, 1.81], [0.3, 1.87], [0, 1.89]];
+  const resample = (pts, n) => {
+    const seg = []; let L = 0;
+    for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); L += d; }
+    const out = [];
+    for (let k = 0; k < n; k++) {
+      let s = (k / (n - 1)) * L, i = 0;
+      while (i < seg.length - 1 && s > seg[i]) { s -= seg[i]; i++; }
+      const f = seg[i] ? Math.min(1, s / seg[i]) : 0;
+      out.push([pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f]);
+    }
+    return out;
+  };
+  const PROF = resample(RAW, 72);
+  const profV = (r) => PROF.map(([x, y]) => new T.Vector2(x * r, y));
+  const radiusAt = y => {
+    for (let i = 4; i < RAW.length - 1; i++) {
+      const [r0, y0] = RAW[i], [r1, y1] = RAW[i + 1];
+      if (y >= y0 && y <= y1) return r0 + (r1 - r0) * ((y - y0) / (y1 - y0 || 1));
+    }
+    if (y < -1.2) return 0.16 + 0.84 * ((y + 1.72) / 0.52);
+    return 0;
+  };
+  const vAt = y => {
+    for (let i = 0; i < PROF.length - 1; i++) {
+      const y0 = PROF[i][1], y1 = PROF[i + 1][1];
+      if (y1 > y0 && y >= y0 && y <= y1) return (i + (y - y0) / (y1 - y0)) / (PROF.length - 1);
+    }
+    return -1;
+  };
+
+  const tube = (pts, r = 0.065, mat = steel) => {
+    const curve = new T.CatmullRomCurve3(pts.map(p => new T.Vector3(...p)), false, 'catmullrom', 0.02);
+    return new T.Mesh(new T.TubeGeometry(curve, Math.max(24, pts.length * 20), r, 14, false), mat);
+  };
+  const cyl = (r, hgt, mat, x, y, z) => { const m = new T.Mesh(new T.CylinderGeometry(r, r, hgt, 24), mat); m.position.set(x, y, z); return m; };
+
+  const HEADER_Y = 3.35, HEADER_Z = -2.6, BOTTOM_Y = -2.55;
+  const plant = new T.Group(); scene.add(plant);
+
+  function addTank({ x, z, s, cut = false }) {
+    const g = new T.Group();
+    g.position.set(x, 3 * s - 3, z);
+    g.scale.setScalar(s);
+    plant.add(g);
+    const CUT0 = 1.45, CUTLEN = Math.PI * 2 - 1.9;
+    if (!cut) {
+      g.add(new T.Mesh(new T.LatheGeometry(profV(1), 96), steel));
+      [-1.2, 1.3].forEach(y => { const ring = new T.Mesh(new T.TorusGeometry(1.003, 0.014, 8, 128), steelSatin); ring.rotation.x = Math.PI / 2; ring.position.y = y; g.add(ring); });
+    } else {
+      g.add(new T.Mesh(new T.LatheGeometry(profV(1), 128, CUT0, CUTLEN), steel));
+      g.add(new T.Mesh(new T.LatheGeometry(profV(0.975), 128, CUT0, CUTLEN), steelInner));
+      // Schnittkanten mit Wandstärke
+      [CUT0, CUT0 + CUTLEN].forEach(phi => {
+        const pos = [];
+        PROF.forEach(([r, y]) => { pos.push(Math.sin(phi) * r, y, Math.cos(phi) * r, Math.sin(phi) * r * 0.975, y, Math.cos(phi) * r * 0.975); });
+        const idx = [];
+        for (let i = 0; i < PROF.length - 1; i++) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+        const geo = new T.BufferGeometry();
+        geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); geo.setIndex(idx); geo.computeVertexNormals();
+        g.add(new T.Mesh(geo, new T.MeshStandardMaterial({ color: 0xeaf2fa, metalness: 0.7, roughness: 0.25, side: T.DoubleSide })));
+      });
+    }
+    // Standfüße
+    for (let k = 0; k < 4; k++) {
+      const a = Math.PI / 4 + (k * Math.PI) / 2;
+      g.add(cyl(0.05, 1.9, steelSatin, Math.sin(a) * 0.93, -2.05, Math.cos(a) * 0.93));
+      g.add(cyl(0.12, 0.04, darkMetal, Math.sin(a) * 0.93, -2.98, Math.cos(a) * 0.93));
+    }
+    // Mannloch & Stutzen
+    g.add(cyl(0.2, 0.14, steelSatin, 0.42, 1.86, -0.2));
+    g.add(cyl(0.24, 0.03, steel, 0.42, 1.94, -0.2));
+    // Leitungen (Weltkoordinaten)
+    const top = g.position.y + 1.89 * s, bottom = g.position.y - 1.92 * s;
+    const px = cut ? x : x - 0.35 * s;
+    plant.add(tube([[px, top - 0.02, z], [px, HEADER_Y - 0.25, z], [px, HEADER_Y, z - 0.25], [px, HEADER_Y, HEADER_Z]]));
+    plant.add(tube([[x, bottom + 0.05, z], [x, BOTTOM_Y + 0.25, z], [x, BOTTOM_Y, z - 0.25], [x, BOTTOM_Y, HEADER_Z]], 0.07));
+    // Ventil mit Antrieb in der Bodenleitung
+    const vy = (bottom + BOTTOM_Y) / 2 + 0.05;
+    const body = cyl(0.11, 0.12, steelSatin, x, vy, z); plant.add(body);
+    const act = cyl(0.085, 0.26, accent, x + 0.2, vy, z); act.rotation.z = Math.PI / 2; plant.add(act);
+    return { g, CUT0, CUTLEN, s };
+  }
+
+  addTank({ x: -3.2, z: -1.3, s: 0.92 });
+  addTank({ x: 3.1, z: -1.1, s: 0.98 });
+  addTank({ x: -0.9, z: -5.2, s: 1.05 });
+  addTank({ x: 2.4, z: -5.6, s: 0.88 });
+  const main = addTank({ x: 0, z: 0, s: 1.18, cut: true });
+  // Sammelleitungen
+  plant.add(tube([[-6, HEADER_Y, HEADER_Z], [6, HEADER_Y, HEADER_Z]], 0.09));
+  plant.add(tube([[-6, BOTTOM_Y, HEADER_Z], [6, BOTTOM_Y, HEADER_Z]], 0.1));
+  for (const xx of [-5, -1.6, 1.6, 5]) { plant.add(cyl(0.04, HEADER_Y + 3, darkMetal, xx, (HEADER_Y - 3) / 2, HEADER_Z - 0.25)); }
+
+  /* Verschmutzung der Innenwand (Canvas-Textur, wird an den Auftreffpunkten radiert) */
+  const DW = 1024, DH = 1024;
+  const dirtSrc = document.createElement('canvas'); dirtSrc.width = DW; dirtSrc.height = DH;
+  (() => {
+    const g = dirtSrc.getContext('2d');
+    const blob = (x, y, r, a, col) => { const rg = g.createRadialGradient(x, y, 0, x, y, r); rg.addColorStop(0, `rgba(${col},${a})`); rg.addColorStop(1, `rgba(${col},0)`); g.fillStyle = rg; g.fillRect(x - r, y - r, r * 2, r * 2); };
+    g.fillStyle = 'rgba(96,70,40,0.42)'; g.fillRect(0, 0, DW, DH);
+    for (let i = 0; i < 900; i++) {
+      const y = Math.pow(Math.random(), 0.7) * DH;
+      blob(Math.random() * DW, y, 10 + Math.random() * 46, 0.18 + Math.random() * 0.35, Math.random() < 0.5 ? '88,58,30' : '120,92,52');
+    }
+    // Produktrand (Füllstandslinie) und Sumpf
+    const ring = DH * (1 - vAt(0.55));
+    for (let x = 0; x < DW; x += 6) blob(x, ring + (Math.random() - 0.5) * 10, 18 + Math.random() * 14, 0.5, '74,48,24');
+    const sump = DH * (1 - vAt(-1.4));
+    for (let x = 0; x < DW; x += 8) blob(x, sump + Math.random() * 80, 30, 0.35, '70,46,22');
+  })();
+  const dirt = document.createElement('canvas'); dirt.width = DW; dirt.height = DH;
+  const dctx = dirt.getContext('2d');
+  dctx.drawImage(dirtSrc, 0, 0);
+  const dirtTex = new T.CanvasTexture(dirt);
+  dirtTex.encoding = T.sRGBEncoding;
+  dirtTex.anisotropy = 4;
+  main.g.add(new T.Mesh(new T.LatheGeometry(profV(0.968), 128, main.CUT0, main.CUTLEN),
+    new T.MeshStandardMaterial({ map: dirtTex, transparent: true, roughness: 0.9, metalness: 0, side: T.DoubleSide, depthWrite: false })));
+
+  /* Zielstrahlreiniger */
+  const HEAD_Y = 0.35;
+  const inner = new T.PointLight(0xdff4ff, 1.6, 3.2, 1.6); inner.position.set(0, HEAD_Y + 0.4, 0); main.g.add(inner);
+  const pipeTop = (HEADER_Y - main.g.position.y) / main.s;
+  main.g.add(cyl(0.035, pipeTop - (HEAD_Y + 0.12), steel, 0, (pipeTop + HEAD_Y + 0.12) / 2, 0));
+  main.g.add(cyl(0.06, 0.16, steelSatin, 0, HEAD_Y + 0.12, 0));
+  const hub = new T.Group(); hub.position.y = HEAD_Y; main.g.add(hub);
+  hub.add(cyl(0.07, 0.06, steel, 0, 0.03, 0));
+  const carrier = new T.Group(); hub.add(carrier);
+  const ball = new T.Mesh(new T.SphereGeometry(0.075, 24, 16), steel); carrier.add(ball);
+  const axle = cyl(0.03, 0.22, steelSatin, 0, 0, 0); axle.rotation.z = Math.PI / 2; carrier.add(axle);
+  const NOZ = [0, 1, 2, 3].map(k => Math.PI / 4 + (k * Math.PI) / 2);
+  NOZ.forEach(a => {
+    const n = new T.Mesh(new T.CylinderGeometry(0.016, 0.024, 0.09, 12), steel);
+    n.position.set(0, Math.cos(a) * 0.1, Math.sin(a) * 0.1); n.rotation.x = a; carrier.add(n);
+  });
+
+  /* Strahlen als Partikel */
+  const N = 3600;
+  const pos = new Float32Array(N * 3), vel = new Float32Array(N * 3), col = new Float32Array(N * 3), life = new Float32Array(N), kind = new Uint8Array(N);
+  const pGeo = new T.BufferGeometry();
+  pGeo.setAttribute('position', new T.BufferAttribute(pos, 3));
+  pGeo.setAttribute('color', new T.BufferAttribute(col, 3));
+  const sprite = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const g = c.getContext('2d'); const rg = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    rg.addColorStop(0, 'rgba(255,255,255,1)'); rg.addColorStop(0.35, 'rgba(200,240,255,0.7)'); rg.addColorStop(1, 'rgba(120,210,255,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, 64, 64);
+    return new T.CanvasTexture(c);
+  })();
+  const pts = new T.Points(pGeo, new T.PointsMaterial({ size: 0.065, map: sprite, transparent: true, depthWrite: false, blending: T.AdditiveBlending, vertexColors: true }));
+  pts.frustumCulled = false;
+  main.g.add(pts);
+  for (let i = 0; i < N; i++) pos[i * 3 + 1] = -99;
+  let cursor = 0;
+  const spawn = (x, y, z, vx, vy, vz, l, k) => {
+    const i = cursor; cursor = (cursor + 1) % N;
+    pos.set([x, y, z], i * 3); vel.set([vx, vy, vz], i * 3); life[i] = l; kind[i] = k;
+  };
+
+  const paint = (x, y, z) => {
+    let phi = Math.atan2(x, z);
+    phi = ((phi - main.CUT0) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+    const u = phi / main.CUTLEN, v = vAt(y);
+    if (u > 1 || v < 0) return;
+    const px = u * DW, py = (1 - v) * DH, r = 11 + Math.random() * 6;
+    const rg = dctx.createRadialGradient(px, py, 0, px, py, r);
+    rg.addColorStop(0, 'rgba(0,0,0,0.55)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+    dctx.globalCompositeOperation = 'destination-out';
+    dctx.fillStyle = rg; dctx.fillRect(px - r, py - r, r * 2, r * 2);
+    dctx.globalCompositeOperation = 'source-over';
+    dirty = true;
+  };
+
+  let th1 = 0, th2 = 0, time = 0, dirty = false, last = performance.now();
+  const SPEED = 6.5, W1 = 0.42, W2 = 1.37;
+
+  function step(dt) {
+    th1 += W1 * dt; th2 += W2 * dt; time += dt;
+    hub.rotation.y = th1; carrier.rotation.x = th2;
+    // Emission entlang der vier Düsen
+    const c1 = Math.cos(th1), s1 = Math.sin(th1);
+    for (const a of NOZ) {
+      const b = a + th2, sb = Math.sin(b), cb = Math.cos(b);
+      const dx = sb * s1, dy = cb, dz = sb * c1;
+      for (let k = 0; k < 9; k++) {
+        const j = 0.012;
+        const vx = dx + (Math.random() - 0.5) * j, vy = dy + (Math.random() - 0.5) * j, vz = dz + (Math.random() - 0.5) * j;
+        const adv = Math.random() * dt * SPEED;
+        spawn(dx * 0.14 + vx * adv, HEAD_Y + dy * 0.14 + vy * adv, dz * 0.14 + vz * adv, vx * SPEED, vy * SPEED, vz * SPEED, 1, 0);
+      }
+    }
+    let hits = 0;
+    for (let i = 0; i < N; i++) {
+      if (life[i] <= 0) continue;
+      const o = i * 3;
+      if (kind[i] === 1) vel[o + 1] -= 4 * dt;
+      pos[o] += vel[o] * dt; pos[o + 1] += vel[o + 1] * dt; pos[o + 2] += vel[o + 2] * dt;
+      const x = pos[o], y = pos[o + 1], z = pos[o + 2];
+      if (kind[i] === 0) {
+        const rw = radiusAt(y) * 0.962;
+        if (Math.hypot(x, z) >= rw || y > 1.86 || y < -1.8) {
+          life[i] = 0; pos[o + 1] = -99;
+          if (hits++ < 90) paint(x, y, z);
+          if (Math.random() < 0.5) {
+            const nx = -x, nz = -z, nl = Math.hypot(nx, nz) || 1;
+            spawn(x, y, z, (nx / nl) * 0.7 + (Math.random() - 0.5) * 0.8, (Math.random() - 0.3) * 0.9, (nz / nl) * 0.7 + (Math.random() - 0.5) * 0.8, 0.45, 1);
+          }
+          continue;
+        }
+        col[o] = 0.75; col[o + 1] = 0.92; col[o + 2] = 1;
+      } else {
+        life[i] -= dt / 0.45;
+        if (life[i] <= 0) { pos[o + 1] = -99; continue; }
+        const l = life[i] * 0.6;
+        col[o] = 0.55 * l; col[o + 1] = 0.8 * l; col[o + 2] = l;
+      }
+    }
+    // Wiederverschmutzung im Zyklus, damit die Reinigung sichtbar bleibt
+    if (time % 48 > 44) { dctx.globalAlpha = 0.05; dctx.drawImage(dirtSrc, 0, 0); dctx.globalAlpha = 1; dirty = true; }
+    pGeo.attributes.position.needsUpdate = true;
+    pGeo.attributes.color.needsUpdate = true;
+  }
+  function resize() {
+    const w = host.clientWidth || 1, hgt = host.clientHeight || 1;
+    renderer.setSize(w, hgt, false);
+    camera.aspect = w / hgt;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(host);
+  resize();
+
+  function frame(now) {
+    requestAnimationFrame(frame);
+    if (document.hidden) { last = now; return; }
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    // Bewegung: langsame, ruhige Kamerafahrt
+    const tt = reduced ? 0 : time;
+    const az = 0.5 + 0.2 * Math.sin(tt * 0.06);
+    const dist = camera.aspect < 0.7 ? 19 : camera.aspect < 1 ? 15.5 : 12.5;
+    camera.position.set(Math.sin(az) * dist, 2.6 + 0.4 * Math.sin(tt * 0.045), Math.cos(az) * dist);
+    camera.lookAt(0, -0.2, -1.2);
+    step(dt);
+    if (dirty) { dirtTex.needsUpdate = true; dirty = false; }
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(frame);
+})();
+
+</script>
+</body>
+</html>

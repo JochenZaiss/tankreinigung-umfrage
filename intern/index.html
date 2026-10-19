@@ -1,0 +1,1222 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insider-Check: Behälterreinigung der Zukunft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+body.ext {
+  --bg: #041427; --fg: #eef6ff; --muted: #9fb6d1; --card: rgba(255,255,255,.06); --card-h: rgba(255,255,255,.1);
+  --border: rgba(255,255,255,.15); --accent: #36d6ff; --accent2: #7cf5c8; --accent-soft: rgba(54,214,255,.16);
+  --on-accent: #03213f; --shadow: 0 24px 60px rgba(0,0,0,.4);
+}
+body.int {
+  --bg: #f3f6fb; --fg: #0b2545; --muted: #5b6f8a; --card: #fff; --card-h: #f6f9ff;
+  --border: #d5dfed; --accent: #0a5bd8; --accent2: #00a3a3; --accent-soft: rgba(10,91,216,.09);
+  --on-accent: #fff; --shadow: 0 18px 40px rgba(11,37,69,.13);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { min-height: 100dvh; font-family: var(--font); color: var(--fg); background: var(--bg); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body.ext { background: radial-gradient(1100px 700px at 85% -10%, #12497f 0, transparent 60%), radial-gradient(900px 600px at -10% 110%, #0a3a4c 0, transparent 55%), var(--bg); background-attachment: fixed; }
+body.int { background: linear-gradient(180deg, #e3ecf9, var(--bg) 360px); }
+
+#progress { position: fixed; inset: 0 0 auto 0; height: 4px; background: var(--border); z-index: 20; }
+#progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .7s cubic-bezier(.2,.8,.2,1); box-shadow: 0 0 14px var(--accent); }
+
+.shell { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 16px; min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 22px 0 6px; font-size: 14px; }
+.brand { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.brand b { letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
+.brand .dot { width: 9px; height: 9px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 10px var(--accent); }
+.muted { color: var(--muted); }
+.topright { display: flex; align-items: center; gap: 14px; }
+#counter { font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 600; }
+#langs { display: flex; gap: 2px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+#langs:empty { display: none; }
+#langs button { font: inherit; font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 999px; border: 0; background: none; color: var(--muted); cursor: pointer; }
+#langs button.sel { background: var(--accent); color: var(--on-accent); }
+
+.main { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 64px; padding: 28px 0; }
+body.ext { --edw: 0px; --gut: clamp(16px, 4vw, 64px); }
+body.ext .shell { max-width: none; margin: 0 0 0 var(--edw); padding: 0 var(--gut); }
+body.ext .main { grid-template-columns: minmax(0, 640px) 1fr; }
+body.ext #nav { max-width: 640px; }
+#stage { position: relative; z-index: 1; max-width: 720px; width: 100%; }
+#visual { display: none; }
+body.ext #visual { display: block; position: fixed; top: 0; right: 0; bottom: 0; left: calc(var(--edw) + var(--gut) + 660px); z-index: 0; pointer-events: none; }
+.scene3d { display: block; width: 100%; height: 100%; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22%); mask-image: linear-gradient(90deg, transparent 0, #000 22%); }
+#scene-cap { position: absolute; right: 28px; bottom: 24px; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); opacity: .8; }
+body.ext .top { position: relative; z-index: 2; }
+
+.screen { animation: in-up .55s cubic-bezier(.2,.8,.2,1) both; }
+.screen.from-top { animation-name: in-down; }
+@keyframes in-up { from { opacity: 0; transform: translateY(28px); } }
+@keyframes in-down { from { opacity: 0; transform: translateY(-28px); } }
+
+.eyebrow { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+.tag { font-size: 11px; letter-spacing: .04em; text-transform: none; font-weight: 500; color: var(--muted); border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px; }
+.hero { font-size: clamp(32px, 5vw, 58px); line-height: 1.05; letter-spacing: -.03em; margin: 0 0 18px; font-weight: 800; }
+body.ext .hero { background: linear-gradient(100deg, #fff 35%, var(--accent) 75%, var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lead { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.55; color: var(--muted); margin: 0 0 24px; max-width: 60ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.pill { border: 1px solid var(--border); background: var(--card); border-radius: 99px; padding: 6px 13px; font-size: 14px; }
+.langpick { margin-bottom: 30px; }
+.langpick .muted { display: block; font-size: 13px; margin-bottom: 8px; }
+.langbtns { display: flex; flex-wrap: wrap; gap: 8px; }
+.langbtn { font: inherit; font-size: 15px; font-weight: 600; padding: 9px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: inherit; cursor: pointer; transition: border-color .15s, background .15s; }
+.langbtn:hover { border-color: var(--accent); }
+.langbtn.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.cta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+
+.qtitle { font-size: clamp(24px, 3.2vw, 36px); line-height: 1.17; letter-spacing: -.02em; margin: 0 0 10px; font-weight: 750; text-wrap: balance; }
+.qsub { color: var(--muted); font-size: 17px; line-height: 1.5; margin: 0 0 6px; max-width: 62ch; }
+.qhint { color: var(--muted); font-size: 14px; margin: 6px 0 0; }
+.qhint.center { text-align: center; }
+.qbody { margin-top: 26px; }
+
+.opts { display: grid; gap: 10px; }
+.opts.grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+.opts.row { grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); }
+.opt { font: inherit; color: inherit; text-align: left; display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 58px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-size: 16px; line-height: 1.3; transition: transform .15s, border-color .15s, background .15s, box-shadow .15s, opacity .15s; }
+.opt:hover { border-color: var(--accent); background: var(--card-h); transform: translateY(-1px); }
+.opt:focus-visible, .btn:focus-visible, .vote:focus-visible, .npsbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opt.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.opt.dim { opacity: .45; }
+.opt .key { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 6px; font-size: 11px; font-weight: 700; color: var(--muted); transition: inherit; }
+.opt.sel .key { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.opt .ico { flex: none; font-size: 22px; }
+.opt .lbl { overflow-wrap: anywhere; }
+.opt .lbl small { display: block; color: var(--muted); font-size: 13px; margin-top: 3px; }
+.opts.row .opt { flex-direction: column; justify-content: center; text-align: center; gap: 8px; padding: 16px 10px; }
+.opts.row .opt .ico { font-size: 28px; }
+.pop { animation: pop .32s; }
+@keyframes pop { 40% { transform: scale(1.04); } }
+.shake { animation: shake .35s; }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+.field { width: 100%; font: inherit; font-size: 17px; color: var(--fg); background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 13px 14px; outline: none; transition: border-color .15s, box-shadow .15s; }
+.field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.field::placeholder { color: var(--muted); opacity: .8; }
+.opts + .field { margin-top: 12px; }
+.field[hidden] { display: none; }
+textarea.field { resize: vertical; min-height: 110px; line-height: 1.5; }
+.field.big { font-size: 20px; padding: 18px; }
+.textwrap { position: relative; }
+.below { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+.wand { position: absolute; right: 4px; top: -46px; font-size: 34px; animation: wand 3s ease-in-out infinite; }
+@keyframes wand { 50% { transform: rotate(-14deg) translateY(-4px); } }
+.spark { position: absolute; pointer-events: none; color: var(--accent2); font-size: 15px; animation: spark .9s ease-out forwards; }
+@keyframes spark { to { opacity: 0; transform: translateY(-34px) scale(.4); } }
+
+.nps { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 6px; }
+.npsbtn { font: inherit; font-weight: 700; font-size: 17px; aspect-ratio: 1 / 1.15; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: inherit; cursor: pointer; transition: transform .15s, background .2s, border-color .15s, box-shadow .2s; }
+.npsbtn:hover { border-color: hsl(var(--h) 80% 55%); transform: translateY(-2px); }
+.npsbtn.sel { background: hsl(var(--h) 72% 48%); border-color: transparent; color: #fff; transform: translateY(-4px) scale(1.07); box-shadow: 0 10px 22px hsl(var(--h) 72% 40% / .45); }
+.ends { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; margin-top: 10px; }
+
+.sliderwrap { text-align: center; padding: 6px 4px; }
+.bigval { display: block; font-size: 68px; font-weight: 800; letter-spacing: -.03em; color: var(--accent); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+.bigval.idle { color: var(--muted); opacity: .6; }
+.range { -webkit-appearance: none; appearance: none; width: 100%; height: 10px; border-radius: 99px; background: linear-gradient(90deg, var(--accent) var(--p), var(--border) var(--p)); outline: none; cursor: pointer; }
+.range.idle { background: var(--border); }
+.range::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+.range::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); }
+.range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 5px var(--accent-soft); }
+
+.rankend { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px 4px; }
+.rankend.bottom { color: var(--muted); margin: 8px 0 0 4px; }
+.rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.rankitem { display: flex; align-items: center; gap: 12px; padding: 11px 11px 11px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; transition: box-shadow .2s, transform .2s, background .2s, border-color .2s; }
+.rankitem.dragging { cursor: grabbing; position: relative; z-index: 2; transform: scale(1.025); box-shadow: var(--shadow); border-color: var(--accent); background: var(--card-h); }
+.rankitem.flash { animation: pop .4s; }
+.grip { color: var(--muted); letter-spacing: -3px; font-weight: 700; }
+.num { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: var(--accent-soft); color: var(--accent); }
+.rankitem:first-child .num { background: var(--accent); color: var(--on-accent); }
+.rankitem .lbl { flex: 1; min-width: 0; }
+.arrows { display: flex; gap: 4px; }
+.arrows button { font: inherit; font-size: 10px; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; }
+.arrows button:hover { color: var(--accent); border-color: var(--accent); }
+
+.stack { position: relative; height: 210px; max-width: 540px; margin: 0 auto; }
+.idea { position: absolute; inset: 0; border-radius: 22px; border: 1px solid var(--border); background: var(--card); padding: 26px 28px; box-shadow: var(--shadow); transition: transform .33s cubic-bezier(.4,0,.2,1), opacity .33s; }
+body.ext .idea { background: #0c2546; }
+body.ext .idea.live { background: linear-gradient(150deg, #134a7a, #0c2546 65%); }
+.idea.ghost.g1 { transform: translateY(12px) scale(.96); opacity: .6; }
+.idea.ghost.g2 { transform: translateY(24px) scale(.92); opacity: .3; }
+.idea.live { animation: card-in .35s; }
+@keyframes card-in { from { transform: translateY(12px) scale(.96); opacity: .6; } }
+.idea.out-0 { transform: translate(0, -110%) rotate(-3deg); opacity: 0; }
+.idea.out-1 { transform: translate(115%, 0) rotate(8deg); opacity: 0; }
+.idea.out-2 { transform: translate(-115%, 0) rotate(-8deg); opacity: 0; }
+.idea-n { position: absolute; top: 18px; right: 22px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.idea-ico { font-size: 40px; margin-bottom: 10px; }
+.idea h3 { margin: 0 0 8px; font-size: 23px; letter-spacing: -.01em; }
+.idea p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 16px; }
+.votes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 540px; margin: 46px auto 0; }
+.vote { font: inherit; font-weight: 650; font-size: 15px; padding: 14px 8px; border-radius: 14px; border: 1px solid var(--border); background: var(--card); color: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s, border-color .15s, background .15s; }
+.vote:hover { transform: translateY(-2px); border-color: var(--accent); background: var(--card-h); }
+.vote .k { font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+.linkbtn { display: block; margin: 16px auto 0; font: inherit; font-size: 14px; color: var(--muted); background: none; border: 0; cursor: pointer; }
+.linkbtn:hover { color: var(--accent); }
+.cardsum { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.cardsum li { display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
+.cardsum .lbl { flex: 1; min-width: 0; }
+.chip.c0 { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.chip.c2 { background: transparent; color: var(--muted); }
+.chip { font: inherit; font-size: 13px; font-weight: 650; border-radius: 99px; padding: 5px 11px; border: 1px solid var(--border); background: var(--accent-soft); color: inherit; cursor: pointer; white-space: nowrap; }
+
+.formgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fld { display: grid; gap: 7px; font-size: 14px; font-weight: 600; }
+.fld em { font-weight: 400; font-style: normal; color: var(--muted); }
+.fld.wide { grid-column: 1 / -1; }
+.note { font-size: 13px; color: var(--muted); margin-top: 18px; line-height: 1.5; max-width: 62ch; }
+
+#nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0 26px; }
+#nav[hidden] { display: none; }
+.navright { display: flex; align-items: center; gap: 14px; }
+.hint { color: var(--muted); font-size: 13px; }
+.btn { font: inherit; font-weight: 650; font-size: 16px; border-radius: 12px; padding: 12px 22px; border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: transform .15s, box-shadow .15s, opacity .2s; }
+.btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on-accent); box-shadow: 0 8px 26px var(--accent-soft); }
+body.int .btn.primary { background: var(--accent); }
+.btn.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 30px var(--accent-soft); }
+.btn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+.btn.ghost { background: transparent; border-color: var(--border); color: var(--fg); }
+.btn.ghost:hover { border-color: var(--accent); }
+.btn.big { font-size: 18px; padding: 15px 30px; }
+
+.done-badge { width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--on-accent); margin-bottom: 24px; animation: pop .6s; box-shadow: 0 0 40px var(--accent-soft); }
+.testbox { margin-top: 26px; padding: 16px 18px; border: 1px dashed var(--border); border-radius: 14px; font-size: 14px; color: var(--muted); }
+.testbox p { margin: 0 0 12px; }
+.drop { position: fixed; top: -24px; width: 10px; height: 14px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; z-index: 50; pointer-events: none; animation: fall linear forwards; }
+@keyframes fall { to { top: 110vh; rotate: var(--r); opacity: .2; } }
+
+
+@media (max-width: 860px) {
+  body.ext .main { grid-template-columns: minmax(0, 1fr); }
+  body.ext #visual { left: 0; opacity: .22; }
+  .scene3d { -webkit-mask-image: none; mask-image: none; }
+  #scene-cap { display: none; }
+  body.ext .shell { margin-left: 0; }
+  .hint { display: none; }
+  .formgrid { grid-template-columns: 1fr; }
+  .main { gap: 24px; padding: 14px 0 8px; align-items: start; }
+  #nav { position: sticky; bottom: 0; z-index: 5; padding: 22px 0 18px; background: linear-gradient(transparent, var(--bg) 35%); }
+}
+@media (max-width: 520px) {
+  .brand .muted { display: none; }
+  .nps { gap: 3px; }
+  .npsbtn { font-size: 14px; border-radius: 7px; }
+  .opts.grid { grid-template-columns: 1fr 1fr; }
+  .opt { padding: 12px; font-size: 15px; gap: 10px; }
+  .opt .key { display: none; }
+  .votes { gap: 6px; }
+  .vote { font-size: 13px; padding: 12px 4px; }
+  .vote .k { display: none; }
+  .stack { height: 270px; }
+  .idea { padding: 22px; }
+  .arrows button { width: 28px; }
+  .grip { display: none; }
+  .bigval { font-size: 54px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ---------- Editor-Sidebar (nur Projektteam) ---------- */
+#editor { position: fixed; top: 0; left: 0; bottom: 0; width: 340px; z-index: 40; display: flex; flex-direction: column; background: #081a31; color: #e8f1fb; border-right: 1px solid rgba(255,255,255,.12); box-shadow: 8px 0 30px rgba(0,0,0,.35); transform: translateX(-102%); transition: transform .3s cubic-bezier(.2,.8,.2,1); font-size: 14px; }
+body.editor-open #editor { transform: none; }
+body.ext.editor-open { --edw: 340px; }
+#editor-toggle { position: fixed; left: 0; top: 50%; z-index: 39; transform: translateY(-50%); padding: 16px 9px; border: 1px solid rgba(255,255,255,.18); border-left: 0; border-radius: 0 10px 10px 0; background: #0b2546; color: #e8f1fb; font: inherit; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; writing-mode: vertical-rl; transform-origin: center; box-shadow: 4px 0 16px rgba(0,0,0,.3); }
+#editor-toggle span { display: inline-block; transform: rotate(180deg); }
+body.editor-open #editor-toggle { display: none; }
+.ed-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 18px 18px 12px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.ed-head b { display: block; font-size: 15px; }
+.ed-head small { display: block; color: #8fa8c4; font-size: 12px; margin-top: 3px; }
+.ed-x { flex: none; width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,.18); background: none; color: inherit; font-size: 18px; cursor: pointer; }
+.ed-x:hover { border-color: #36d6ff; }
+.ed-sec { padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.ed-grow { flex: 1; min-height: 0; display: flex; flex-direction: column; padding-bottom: 6px; }
+.ed-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #8fa8c4; }
+.ed-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.ed-links { display: flex; gap: 10px; }
+.ed-link { font: inherit; font-size: 12px; color: #36d6ff; background: none; border: 0; padding: 0; cursor: pointer; }
+.ed-link:hover { text-decoration: underline; }
+.ed-hint { color: #8fa8c4; font-size: 12px; line-height: 1.45; margin: 8px 0 0; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 8px; padding: 3px; border-radius: 10px; background: rgba(255,255,255,.06); }
+.seg button { font: inherit; font-size: 13px; font-weight: 650; padding: 8px; border-radius: 8px; border: 0; background: none; color: #b9cbe0; cursor: pointer; }
+.seg button.sel { background: #36d6ff; color: #03213f; }
+.ed-list { list-style: none; margin: 0 -8px; padding: 0; overflow-y: auto; flex: 1; min-height: 0; }
+.ed-list li { display: flex; align-items: center; gap: 6px; padding: 2px 6px; border-radius: 10px; }
+.ed-list li:hover { background: rgba(255,255,255,.05); }
+.ed-list li.cur { background: rgba(54,214,255,.13); box-shadow: inset 2px 0 0 #36d6ff; }
+.ed-list li.off .ed-txt { opacity: .5; }
+.ed-check { flex: none; display: grid; place-items: center; width: 26px; height: 34px; cursor: pointer; }
+.ed-check input { width: 16px; height: 16px; accent-color: #36d6ff; cursor: pointer; }
+.ed-q { flex: 1; min-width: 0; display: flex; gap: 8px; align-items: flex-start; padding: 7px 4px; font: inherit; color: inherit; text-align: left; background: none; border: 0; cursor: pointer; }
+.ed-num { flex: none; width: 20px; font-size: 12px; font-weight: 700; color: #36d6ff; text-align: right; padding-top: 1px; font-variant-numeric: tabular-nums; }
+.ed-txt { min-width: 0; }
+.ed-title { display: block; font-size: 13px; line-height: 1.35; }
+.ed-meta { display: block; font-size: 11px; color: #8fa8c4; margin-top: 2px; }
+.ed-new { font-style: normal; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #03213f; background: #7cf5c8; border-radius: 4px; padding: 1px 5px; margin-left: 6px; }
+.ed-foot { padding: 14px 18px 18px; border-top: 1px solid rgba(255,255,255,.1); }
+.ed-foot .btn { width: 100%; justify-content: center; font-size: 15px; }
+@media (max-width: 1640px) { body.ext.editor-open #visual { left: 340px; opacity: .18; } body.ext.editor-open .scene3d { -webkit-mask-image: none; mask-image: none; } body.ext.editor-open #scene-cap { display: none; } }
+@media (max-width: 860px) { #editor { width: min(340px, 92vw); } body.ext.editor-open { --edw: 0px; } body.ext.editor-open #visual { left: 0; } }
+
+</style>
+</head>
+<body class="int">
+<div id="progress"><i></i></div>
+<div class="shell">
+  <header class="top">
+    <div class="brand"><span class="dot"></span><b>Lechler</b><span class="muted">Interne Umfrage</span></div>
+    <div class="topright"><span id="counter"></span><div id="langs"></div></div>
+  </header>
+  <main class="main">
+    <div id="stage" aria-live="polite"></div>
+    <aside id="visual" aria-hidden="true"></aside>
+  </main>
+  <footer id="nav" hidden></footer>
+</div>
+<script id="preset">window.PRESET = null;</script>
+<script>
+/* Interne Umfrage: Vertrieb, Anwendungstechnik, Service, PM, Töchter/Vertretungen – ca. 6 Minuten, 15 Fragen, DE/EN */
+window.SURVEY = {
+  id: 'tankclean-future-intern-2026',
+  languages: ['de', 'en'],
+  analysisLang: 'de',
+  endpoint: '',
+  visual: 'none',
+  confetti: ['#0a5bd8', '#00a3a3', '#7cc4ff', '#0b2545'],
+
+  welcome: {
+    eyebrow: { de: 'Interne Umfrage · Insider-Check', en: 'Internal survey · Insider check' },
+    title: { de: 'Behälterreinigung der Zukunft – dein Blick von der Kundenfront', en: 'The future of tank cleaning – your view from the customer front line' },
+    lead: {
+      de: 'Du sprichst täglich mit Betreibern, Anlagenbauern und Planern. Bevor wir die große Kundenumfrage starten, wollen wir wissen: Was hörst du da draußen? Wo drückt der Schuh – und wohin sollten wir uns entwickeln?',
+      en: 'You talk to operators, plant builders and engineers every day. Before we launch the big customer survey, we want to know: what are you hearing out there? Where does it hurt – and where should we be heading?',
+    },
+    meta: [
+      { de: '⏱ ca. 6 Minuten', en: '⏱ approx. 6 minutes' },
+      { de: '15 Fragen', en: '15 questions' },
+      { de: '👤 Name freiwillig', en: '👤 name optional' },
+    ],
+  },
+
+  questions: [
+    {
+      id: 'area', type: 'single',
+      title: { de: 'In welchem Bereich arbeitest du?', en: 'Which area do you work in?' },
+      options: [
+        { id: 'field_sales', label: { de: 'Vertrieb Außendienst', en: 'Field sales' } },
+        { id: 'inside_sales', label: { de: 'Vertrieb Innendienst', en: 'Inside sales' } },
+        { id: 'application', label: { de: 'Anwendungstechnik & Engineering', en: 'Application engineering' } },
+        { id: 'service', label: { de: 'Service & Montage', en: 'Service & installation' } },
+        { id: 'pm_rd', label: { de: 'Produktmanagement & Entwicklung', en: 'Product management & R&D' } },
+        { id: 'subsidiary', label: { de: 'Tochtergesellschaft / Vertretung', en: 'Subsidiary / agency' } },
+        { id: 'other', label: { de: 'Anderer Bereich', en: 'Other area' } },
+      ],
+    },
+    {
+      id: 'region', type: 'single', layout: 'grid',
+      title: { de: 'Für welche Region bist du hauptsächlich unterwegs?', en: 'Which region do you mainly cover?' },
+      options: [
+        { id: 'dach', label: { de: 'DACH', en: 'DACH' } },
+        { id: 'europe', label: { de: 'Restliches Europa', en: 'Rest of Europe' } },
+        { id: 'north_america', label: { de: 'Nordamerika', en: 'North America' } },
+        { id: 'latam', label: { de: 'Lateinamerika', en: 'Latin America' } },
+        { id: 'china', label: { de: 'China', en: 'China' } },
+        { id: 'india', label: { de: 'Indien', en: 'India' } },
+        { id: 'apac', label: { de: 'Übriges Asien-Pazifik', en: 'Rest of Asia-Pacific' } },
+        { id: 'mea', label: { de: 'Naher Osten & Afrika', en: 'Middle East & Africa' } },
+        { id: 'global', label: { de: 'Weltweit', en: 'Worldwide' } },
+      ],
+    },
+    {
+      id: 'industries', type: 'multi',
+      title: { de: 'Welche Branchen betreust du rund um Behälterreinigung?', en: 'Which industries do you serve in tank cleaning?' },
+      options: [
+        { id: 'beverage', label: { de: 'Brauerei & Getränke', en: 'Brewing & beverages' } },
+        { id: 'food', label: { de: 'Molkerei & Lebensmittel', en: 'Dairy & food' } },
+        { id: 'pharma', label: { de: 'Pharma & Biotech', en: 'Pharma & biotech' } },
+        { id: 'chemicals', label: { de: 'Chemie', en: 'Chemicals' } },
+        { id: 'cosmetics', label: { de: 'Kosmetik', en: 'Cosmetics' } },
+        { id: 'oem', label: { de: 'Behälter- & Anlagenbauer', en: 'Tank & plant builders' } },
+        { id: 'other', label: { de: 'Weitere Branchen', en: 'Other industries' } },
+      ],
+    },
+    {
+      id: 'customer_pains', type: 'multi', max: 3, other: true,
+      title: { de: 'Welche Probleme schildern dir Kunden bei der Behälterreinigung am häufigsten?', en: 'Which tank cleaning problems do customers mention to you most often?' },
+      options: [
+        { id: 'downtime', label: { de: 'Zu lange Reinigungs-/Stillstandszeiten', en: 'Cleaning / downtime takes too long' } },
+        { id: 'consumption', label: { de: 'Hoher Wasser-, Chemie- & Energieverbrauch', en: 'High water, chemical & energy use' } },
+        { id: 'proof', label: { de: 'Kein Nachweis, dass wirklich sauber ist', en: 'No proof it’s really clean' } },
+        { id: 'residues', label: { de: 'Rückstände & Sprühschatten', en: 'Residues & spray shadows' } },
+        { id: 'failures', label: { de: 'Ausfälle & Verschleiß der Reiniger', en: 'Cleaner failures & wear' } },
+        { id: 'validation', label: { de: 'Validierung & Dokumentation', en: 'Validation & documentation' } },
+        { id: 'price', label: { de: 'Kosten & Preisdruck', en: 'Cost & price pressure' } },
+        { id: 'knowhow', label: { de: 'Fehlendes Know-how beim Kunden', en: 'Lack of know-how at the customer' } },
+      ],
+    },
+    {
+      id: 'unsolved', type: 'text', rows: 4,
+      title: { de: 'Welches Kundenproblem kommt immer wieder auf den Tisch – und wir haben heute keine wirklich gute Antwort darauf?', en: 'Which customer problem keeps coming up – and we don’t have a really good answer to it today?' },
+      sub: { de: 'Gern konkret: Branche, Anwendung, was der Kunde gesagt hat.', en: 'Be specific: industry, application, what the customer said.' },
+      placeholder: { de: 'Kunden fragen immer wieder nach …', en: 'Customers keep asking for …' },
+    },
+    {
+      id: 'lost_reasons', type: 'multi', max: 3, other: true,
+      title: { de: 'Warum entscheiden sich Kunden gegen unsere Tankreinigungslösung?', en: 'Why do customers decide against our tank cleaning solution?' },
+      options: [
+        { id: 'price', label: { de: 'Preis', en: 'Price' } },
+        { id: 'running_system', label: { de: '„Never change a running system“ – das Alte läuft ja', en: '“Never change a running system” – the old one works' } },
+        { id: 'competitor_set', label: { de: 'Wettbewerber ist gesetzt / Anlagenbauer gibt vor', en: 'Competitor already specified / OEM decides' } },
+        { id: 'roi_unclear', label: { de: 'Nutzen bzw. ROI nicht greifbar', en: 'Benefit / ROI not tangible' } },
+        { id: 'docs', label: { de: 'Zertifikate & Validierungsunterlagen fehlen', en: 'Missing certificates & validation docs' } },
+        { id: 'fit', label: { de: 'Technik passt nicht (Größe, Druck, Anschluss)', en: 'Technical mismatch (size, pressure, connection)' } },
+        { id: 'delivery', label: { de: 'Lieferzeit', en: 'Lead time' } },
+        { id: 'support', label: { de: 'Zu wenig Betreuung vor Ort', en: 'Not enough local support' } },
+      ],
+    },
+    {
+      id: 'future_priorities', type: 'rank',
+      title: { de: 'Was wird für deine Kunden in 5 Jahren am wichtigsten sein?', en: 'What will matter most to your customers in 5 years?' },
+      items: [
+        { id: 'speed', label: { de: 'Kurze Reinigungszeit', en: 'Short cleaning time' } },
+        { id: 'resources', label: { de: 'Ressourcen sparen (Wasser, Chemie, Energie)', en: 'Saving resources (water, chemicals, energy)' } },
+        { id: 'reliability', label: { de: 'Prozesssicherheit & Reinigungsnachweis', en: 'Process reliability & proof of cleanliness' } },
+        { id: 'capex', label: { de: 'Niedrige Investitionskosten', en: 'Low investment cost' } },
+        { id: 'maintenance', label: { de: 'Wenig Wartung, lange Lebensdauer', en: 'Low maintenance, long life' } },
+        { id: 'digital', label: { de: 'Digitalisierung & Datenanbindung', en: 'Digitalisation & connectivity' } },
+        { id: 'service', label: { de: 'Service & Beratung aus einer Hand', en: 'Service & advice from one source' } },
+      ],
+    },
+    {
+      id: 'idea_demand', type: 'cards',
+      title: { de: 'Wie stark würden deine Kunden diese Ideen nachfragen?', en: 'How strongly would your customers ask for these ideas?' },
+      scaleOpts: [
+        { id: 'high', label: { de: '🔥 Hoch', en: '🔥 High' } },
+        { id: 'some', label: { de: '🤔 Manche', en: '🤔 Some' } },
+        { id: 'low', label: { de: '👋 Kaum', en: '👋 Hardly' } },
+      ],
+      items: [
+        { id: 'live_proof', label: { de: 'Live-Reinigungsnachweis', en: 'Live cleaning verification' }, desc: { de: 'Sensorik bestätigt „sauber“ in Echtzeit, inkl. automatischem Protokoll.', en: 'Sensors confirm “clean” in real time, incl. automatic report.' } },
+        { id: 'predictive', label: { de: 'Vorausschauende Wartung', en: 'Predictive maintenance' }, desc: { de: 'Der Tankreiniger meldet Wartungsbedarf, bevor er ausfällt.', en: 'The tank cleaner reports maintenance needs before it fails.' } },
+        { id: 'simulation', label: { de: 'Reinigungssimulation als Verkaufstool', en: 'Cleaning simulation as a sales tool' }, desc: { de: 'Benetzung, Zeit und Verbrauch für den Kundentank vorab zeigen.', en: 'Show coverage, time and consumption for the customer’s tank in advance.' } },
+        { id: 'self_optimizing', label: { de: 'Selbstoptimierende Reinigung', en: 'Self-optimising cleaning' }, desc: { de: 'Zeit, Druck und Medien passen sich automatisch an.', en: 'Time, pressure and media adapt automatically.' } },
+        { id: 'remote', label: { de: 'Experte auf Abruf', en: 'Expert on demand' }, desc: { de: 'Remote-Support per Video oder App direkt am Tank.', en: 'Remote support via video or app right at the tank.' } },
+        { id: 'audit', label: { de: 'Reinigungs-Audit vor Ort', en: 'On-site cleaning audit' }, desc: { de: 'Analyse der bestehenden Reinigung mit Einsparpotenzial.', en: 'Analysis of the existing cleaning with savings potential.' } },
+        { id: 'caas', label: { de: 'Cleaning as a Service', en: 'Cleaning as a Service' }, desc: { de: 'Abo oder Pay-per-Clean inkl. Hardware, Wartung und Nachweis.', en: 'Subscription or pay-per-clean incl. hardware, maintenance and documentation.' } },
+      ],
+    },
+    {
+      id: 'caas_share', type: 'scale', slider: true, min: 0, max: 100, step: 5, unit: ' %',
+      title: { de: 'Schätzung: Welcher Anteil deiner Kunden würde Reinigung als Service (Abo / Pay-per-Clean) ernsthaft prüfen?', en: 'Estimate: what share of your customers would seriously consider cleaning as a service (subscription / pay-per-clean)?' },
+      minLabel: { de: 'niemand', en: 'nobody' }, maxLabel: { de: 'alle', en: 'everyone' },
+    },
+    {
+      id: 'early_adopters', type: 'scale', slider: true, min: 0, max: 100, step: 5, unit: ' %',
+      title: { de: 'Und wie viele deiner Kunden sind echte Early Adopters, die neue Technik als Pilot testen würden?', en: 'And how many of your customers are true early adopters who would pilot new technology?' },
+      minLabel: { de: 'keiner', en: 'none' }, maxLabel: { de: 'alle', en: 'all' },
+    },
+    {
+      id: 'digital_openness', type: 'single', layout: 'row',
+      title: { de: 'Wie offen sind deine Kunden für vernetzte Sensorik und Datenaustausch am Tank?', en: 'How open are your customers to connected sensors and data exchange at the tank?' },
+      sub: { de: 'IoT, Cloud, Anbindung ans Leitsystem', en: 'IoT, cloud, connection to the control system' },
+      options: [
+        { id: '1', label: { de: 'Gar nicht – IT blockt', en: 'Not at all – IT blocks it' } },
+        { id: '2', label: { de: 'Zurückhaltend', en: 'Reluctant' } },
+        { id: '3', label: { de: 'Gemischt', en: 'Mixed' } },
+        { id: '4', label: { de: 'Eher offen', en: 'Fairly open' } },
+        { id: '5', label: { de: 'Wird schon gefordert', en: 'Already demanded' } },
+      ],
+    },
+    {
+      id: 'sales_support', type: 'multi', max: 3, other: true,
+      title: { de: 'Was würde dir im Verkauf von Tankreinigung am meisten helfen?', en: 'What would help you most in selling tank cleaning?' },
+      options: [
+        { id: 'simulation', label: { de: 'Reinigungssimulation für Kundentanks', en: 'Cleaning simulation for customer tanks' } },
+        { id: 'roi', label: { de: 'ROI- & Einsparrechner', en: 'ROI & savings calculator' } },
+        { id: 'references', label: { de: 'Referenzen & Case Studies', en: 'References & case studies' } },
+        { id: 'demo', label: { de: 'Testcenter, Leihgeräte, Demo-Tank', en: 'Test centre, loan units, demo tank' } },
+        { id: 'training', label: { de: 'Schulungen zur Reinigungstechnik', en: 'Training on cleaning technology' } },
+        { id: 'configurator', label: { de: 'Digitaler Produktkonfigurator', en: 'Digital product configurator' } },
+        { id: 'service_offer', label: { de: 'Service-/Wartungspakete zum Mitverkaufen', en: 'Service / maintenance packages to sell along' } },
+      ],
+    },
+    {
+      id: 'competition', type: 'text', optional: true, rows: 3,
+      title: { de: 'Welche Wettbewerber oder Lösungen beeindrucken dich gerade – und warum?', en: 'Which competitors or solutions impress you right now – and why?' },
+      placeholder: { de: 'z. B. Hersteller, Produkt, Geschäftsmodell …', en: 'e.g. manufacturer, product, business model …' },
+    },
+    {
+      id: 'wish', type: 'text', wish: true, rows: 4,
+      title: { de: 'Dein Wunsch frei: Welches Produkt oder welchen Service hättest du morgen am liebsten im Portfolio?', en: 'Your one wish: which product or service would you most like to have in our portfolio tomorrow?' },
+      sub: { de: 'Denk groß – Hardware, Software, Service oder ein ganz neues Geschäftsmodell.', en: 'Think big – hardware, software, service or an entirely new business model.' },
+      placeholder: { de: 'Ich wünsche mir …', en: 'I wish …' },
+    },
+    {
+      id: 'followup', type: 'form', optional: true,
+      title: { de: 'Zum Schluss: Pilotkunden & Rückfragen', en: 'Finally: pilot customers & follow-up' },
+      sub: { de: 'Beides freiwillig – hilft uns aber enorm für die nächsten Schritte.', en: 'Both optional – but hugely helpful for the next steps.' },
+      fields: [
+        { id: 'pilots', type: 'textarea', wide: true, label: { de: 'Welche Kunden wären ideale Pilot- oder Interviewpartner? (Firma + kurz warum)', en: 'Which customers would be ideal pilot or interview partners? (company + short reason)' } },
+        { id: 'name', wide: true, autocomplete: 'name', label: { de: 'Dein Name – falls wir nachfragen dürfen', en: 'Your name – in case we may follow up' } },
+      ],
+      note: { de: 'Wir sprechen jeden Kundenkontakt vorher mit dir ab.', en: 'We’ll always align with you before contacting any customer.' },
+    },
+  ],
+
+  outro: {
+    title: { de: 'Danke! Dein Input ist angekommen 🙌', en: 'Thanks! Your input has landed 🙌' },
+    text: { de: 'Er fließt direkt ins Konzept-Team „Behälterreinigung der Zukunft“ – und in die Kundenumfrage, die als Nächstes rausgeht.', en: 'It goes straight to the “Future of tank cleaning” concept team – and into the customer survey that goes out next.' },
+  },
+};
+
+</script>
+
+<script>
+/* Umfrage-Engine – „Tank- und Anlagenreinigung der Zukunft"
+ * Liest window.SURVEY (Fragenpool) und optional window.PRESET (fixierte Auswahl der finalen Umfrage).
+ * Fragetypen: single, multi, scale (Buttons oder Slider), rank, cards, text, form
+ * Texte sind entweder {de, en, …} oder – bei Formulierungsvarianten – {s: {de, …}, p: {de, …}}.
+ */
+(() => {
+  'use strict';
+  const S = window.SURVEY;
+  const PRESET = window.PRESET || null;
+  const ALL = S.questions;
+  const LS_KEY = 'survey:' + S.id;
+  const ED_KEY = 'survey-editor:' + S.id;
+  const KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const params = new URLSearchParams(location.search);
+
+  const LANG_NAMES = { de: 'Deutsch', en: 'English', fr: 'Français', es: 'Español', it: 'Italiano', pt: 'Português', zh: '中文' };
+  const SECONDS = { single: 10, multi: 15, scale: 8, rank: 25, cards: 35, text: 45, form: 25 };
+  const TYPE_LABEL = { single: 'Einfachauswahl', multi: 'Mehrfachauswahl', scale: 'Skala', rank: 'Rangfolge', cards: 'Bewertungskarten', text: 'Freitext', form: 'Formular' };
+
+  const UI = {
+    start: { de: 'Umfrage starten', en: 'Start survey', fr: 'Commencer', es: 'Comenzar' },
+    next: { de: 'Weiter', en: 'Next', fr: 'Suivant', es: 'Siguiente' },
+    back: { de: 'Zurück', en: 'Back', fr: 'Retour', es: 'Atrás' },
+    submit: { de: 'Absenden', en: 'Submit', fr: 'Envoyer', es: 'Enviar' },
+    skip: { de: 'Überspringen', en: 'Skip', fr: 'Passer', es: 'Omitir' },
+    sending: { de: 'Wird gesendet …', en: 'Sending …', fr: 'Envoi …', es: 'Enviando …' },
+    pressEnter: { de: 'oder Enter ↵', en: 'or press Enter ↵', fr: 'ou Entrée ↵', es: 'o pulse Intro ↵' },
+    ctrlEnter: { de: '⌘/Strg + Enter = weiter', en: '⌘/Ctrl + Enter = next', fr: '⌘/Ctrl + Entrée = suivant', es: '⌘/Ctrl + Intro = siguiente' },
+    question: { de: 'Frage', en: 'Question', fr: 'Question', es: 'Pregunta' },
+    of: { de: 'von', en: 'of', fr: 'sur', es: 'de' },
+    optional: { de: 'optional', en: 'optional', fr: 'facultatif', es: 'opcional' },
+    chooseLang: { de: 'Sprache wählen', en: 'Choose your language', fr: 'Choisissez votre langue', es: 'Elija su idioma' },
+    chooseUpTo: { de: 'Bis zu {n} Antworten möglich', en: 'Up to {n} answers', fr: 'Jusqu’à {n} réponses', es: 'Hasta {n} respuestas' },
+    chooseAny: { de: 'Mehrfachauswahl möglich', en: 'Select all that apply', fr: 'Plusieurs réponses possibles', es: 'Varias respuestas posibles' },
+    other: { de: 'Sonstiges …', en: 'Other …', fr: 'Autre …', es: 'Otro …' },
+    otherPh: { de: 'Bitte kurz beschreiben', en: 'Please describe briefly', fr: 'Précisez brièvement', es: 'Descríbalo brevemente' },
+    dragHint: { de: 'Ziehen zum Sortieren – oder die Pfeile nutzen', en: 'Drag to reorder – or use the arrows', fr: 'Glissez pour trier – ou utilisez les flèches', es: 'Arrastre para ordenar – o use las flechas' },
+    most: { de: 'Am wichtigsten', en: 'Most important', fr: 'Le plus important', es: 'Lo más importante' },
+    least: { de: 'Am wenigsten wichtig', en: 'Least important', fr: 'Le moins important', es: 'Lo menos importante' },
+    up: { de: 'nach oben', en: 'move up', fr: 'monter', es: 'subir' },
+    down: { de: 'nach unten', en: 'move down', fr: 'descendre', es: 'bajar' },
+    sliderHint: { de: 'Regler bewegen', en: 'Move the slider', fr: 'Déplacez le curseur', es: 'Mueva el control' },
+    undo: { de: 'Letzte Bewertung ändern', en: 'Change last rating', fr: 'Modifier la dernière note', es: 'Cambiar la última valoración' },
+    cardsDone: { de: 'Alle Punkte bewertet – zum Ändern auf eine Bewertung klicken.', en: 'All items rated – click a rating to change it.', fr: 'Tous les éléments sont notés – cliquez sur une note pour la modifier.', es: 'Todo valorado: haga clic en una valoración para cambiarla.' },
+    testMode: { de: 'Testmodus: Es ist noch kein Empfänger hinterlegt – die Antworten wurden nur lokal in diesem Browser gespeichert.', en: 'Test mode: no endpoint configured yet – answers were only stored locally in this browser.', fr: 'Mode test : aucun destinataire configuré – les réponses ont été enregistrées localement.', es: 'Modo de prueba: no hay destino configurado; las respuestas solo se guardaron localmente.' },
+    sendError: { de: 'Die Übertragung ist fehlgeschlagen. Bitte speichern Sie Ihre Antworten als Datei.', en: 'Sending failed. Please save your answers as a file.', fr: 'L’envoi a échoué. Veuillez enregistrer vos réponses dans un fichier.', es: 'El envío falló. Guarde sus respuestas en un archivo.' },
+    saveFile: { de: 'Antworten als Datei speichern', en: 'Save answers as file', fr: 'Enregistrer les réponses', es: 'Guardar respuestas' },
+    restart: { de: 'Neu starten', en: 'Start again', fr: 'Recommencer', es: 'Reiniciar' },
+    exportLocal: { de: 'Lokal gespeicherte Antworten', en: 'Locally stored answers', fr: 'Réponses stockées localement', es: 'Respuestas guardadas localmente' },
+  };
+
+  /* ---------- Editor-Zustand (Variante, Fragenauswahl) ---------- */
+  const EDIT = !!S.editor && !(PRESET && PRESET.locked);
+  let ed = {};
+  if (EDIT) { try { ed = JSON.parse(localStorage.getItem(ED_KEY) || '{}'); } catch { /* kein Speicher */ } }
+  const saveEd = patch => { ed = { ...ed, ...patch }; try { localStorage.setItem(ED_KEY, JSON.stringify(ed)); } catch { /* egal */ } };
+  const DEFAULT_IDS = ALL.filter(q => q.default !== false).map(q => q.id);
+  let variant = (PRESET && PRESET.variant) || ed.variant || S.defaultVariant || 's';
+  let selected = new Set((PRESET && PRESET.questions) || ed.questions || DEFAULT_IDS);
+  let Q = ALL.filter(q => selected.has(q.id));
+
+  let lang = (() => {
+    const p = (params.get('lang') || '').toLowerCase();
+    if (S.languages.includes(p)) return p;
+    const nav = (navigator.languages || [navigator.language || '']).map(l => l.slice(0, 2).toLowerCase());
+    return nav.find(l => S.languages.includes(l)) || S.languages[0];
+  })();
+
+  const pickV = x => (x && typeof x === 'object' && ('s' in x || 'p' in x) ? (variant in x ? x[variant] : x.s) : x);
+  const t = (x, vars) => {
+    x = pickV(x);
+    let s = x == null ? '' : typeof x === 'string' ? x : (x[lang] ?? x.en ?? x.de ?? '');
+    if (vars) for (const k in vars) s = s.replace('{' + k + '}', vars[k]);
+    return s;
+  };
+  const tl = (x, L) => { x = pickV(x); return x == null ? '' : typeof x === 'string' ? x : (x[L] ?? x.de ?? x.en ?? ''); };
+
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(props || {})) {
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
+      else if (k === 'style') el.style.cssText = v;
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : document.createTextNode(c));
+    return el;
+  }
+  const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const retrigger = (el, cls) => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+  const keyBadge = i => h('span', { class: 'key' }, KEYS[i]);
+  const ico = o => (o.icon ? h('span', { class: 'ico' }, o.icon) : null);
+  const minutes = () => Math.max(1, Math.round(Q.reduce((s, q) => s + (SECONDS[q.type] || 10), 0) / 60));
+
+  const state = { step: -1, answers: {}, startedAt: null, sending: false, result: null };
+  const stage = document.getElementById('stage');
+  const nav = document.getElementById('nav');
+  const bar = document.querySelector('#progress > i');
+  const counter = document.getElementById('counter');
+  const langBox = document.getElementById('langs');
+  let advanceTimer = null;
+
+  const get = q => state.answers[q.id];
+  const set = (q, v, silent) => { state.answers[q.id] = v; if (!silent) refreshNav(); };
+  const autoNext = () => { clearTimeout(advanceTimer); advanceTimer = setTimeout(next, 420); };
+
+  /* ---------- Fragetypen ---------- */
+  const TYPES = {
+    single(q) {
+      const wrap = h('div', { class: 'opts ' + (q.layout || 'list'), role: 'radiogroup' });
+      q.options.forEach((o, i) => {
+        const b = h('button', {
+          type: 'button', class: 'opt' + (get(q) === o.id ? ' sel' : ''), role: 'radio', 'aria-checked': String(get(q) === o.id), 'data-key': KEYS[i],
+          onclick: () => {
+            set(q, o.id);
+            wrap.querySelectorAll('.opt').forEach(x => { x.classList.toggle('sel', x === b); x.setAttribute('aria-checked', String(x === b)); });
+            retrigger(b, 'pop');
+            if (q.autoNext !== false) autoNext();
+          },
+        }, keyBadge(i), ico(o), h('span', { class: 'lbl' }, t(o.label), o.desc ? h('small', null, t(o.desc)) : null));
+        wrap.append(b);
+      });
+      return wrap;
+    },
+
+    multi(q) {
+      const a = get(q) || { sel: [], other: '' };
+      set(q, a, true);
+      const items = [...q.options];
+      if (q.other) items.push({ id: '__other', label: UI.other });
+      const wrap = h('div', { class: 'opts ' + (q.layout || 'grid') });
+      let otherInput = null;
+      const sync = () => {
+        wrap.querySelectorAll('.opt').forEach(b => {
+          const on = a.sel.includes(b.dataset.id);
+          b.classList.toggle('sel', on);
+          b.setAttribute('aria-pressed', String(on));
+          b.classList.toggle('dim', !!q.max && a.sel.length >= q.max && !on);
+        });
+        if (otherInput) otherInput.hidden = !a.sel.includes('__other');
+        refreshNav();
+      };
+      items.forEach((o, i) => {
+        const b = h('button', {
+          type: 'button', class: 'opt', 'data-id': o.id, 'data-key': KEYS[i],
+          onclick: () => {
+            if (a.sel.includes(o.id)) a.sel = a.sel.filter(x => x !== o.id);
+            else {
+              if (o.exclusive) a.sel = [];
+              else a.sel = a.sel.filter(x => !items.find(y => y.id === x)?.exclusive);
+              if (q.max && a.sel.length >= q.max) { retrigger(b, 'shake'); return; }
+              a.sel.push(o.id);
+              retrigger(b, 'pop');
+              if (o.id === '__other') setTimeout(() => otherInput.focus(), 60);
+            }
+            sync();
+          },
+        }, keyBadge(i), ico(o), h('span', { class: 'lbl' }, t(o.label)));
+        wrap.append(b);
+      });
+      const out = h('div', null, wrap);
+      if (q.other) {
+        otherInput = h('input', { class: 'field', type: 'text', placeholder: t(UI.otherPh), maxlength: 200 });
+        otherInput.value = a.other || '';
+        otherInput.addEventListener('input', () => { a.other = otherInput.value; refreshNav(); });
+        out.append(otherInput);
+      }
+      sync();
+      return out;
+    },
+
+    scale(q) {
+      if (q.slider) return slider(q);
+      const a = get(q);
+      const row = h('div', { class: 'nps', style: `--n:${q.max - q.min + 1}` });
+      for (let v = q.min; v <= q.max; v++) {
+        const hue = Math.round(((v - q.min) / (q.max - q.min)) * 125);
+        row.append(h('button', {
+          type: 'button', class: 'npsbtn' + (a === v ? ' sel' : ''), style: `--h:${hue}`, 'data-num': v,
+          onclick: () => {
+            set(q, v);
+            row.querySelectorAll('.npsbtn').forEach(x => x.classList.toggle('sel', +x.dataset.num === v));
+            autoNext();
+          },
+        }, String(v)));
+      }
+      return h('div', { class: 'scalewrap' }, row, h('div', { class: 'ends' }, h('span', null, t(q.minLabel)), h('span', null, t(q.maxLabel))));
+    },
+
+    rank(q) {
+      let order = get(q);
+      if (!order) { order = shuffle(q.items.map(i => i.id)); set(q, order, true); }
+      const byId = Object.fromEntries(q.items.map(i => [i.id, i]));
+      const list = h('ol', { class: 'rank' });
+      const save = () => {
+        state.answers[q.id] = [...list.children].map(li => li.dataset.id);
+        [...list.children].forEach((li, i) => { li.querySelector('.num').textContent = i + 1; });
+      };
+      const move = (li, d) => {
+        const sib = d < 0 ? li.previousElementSibling : li.nextElementSibling;
+        if (!sib) return;
+        list.insertBefore(d < 0 ? li : sib, d < 0 ? sib : li);
+        retrigger(li, 'flash');
+        save();
+      };
+      order.forEach((id, i) => {
+        const it = byId[id];
+        const li = h('li', { class: 'rankitem', 'data-id': id },
+          h('span', { class: 'grip', 'aria-hidden': 'true' }, '⋮⋮'),
+          h('span', { class: 'num' }, i + 1),
+          ico(it),
+          h('span', { class: 'lbl' }, t(it.label)),
+          h('span', { class: 'arrows' },
+            h('button', { type: 'button', 'aria-label': t(UI.up), onclick: () => move(li, -1) }, '▲'),
+            h('button', { type: 'button', 'aria-label': t(UI.down), onclick: () => move(li, 1) }, '▼')));
+        li.addEventListener('pointerdown', e => {
+          if (e.target.closest('button') || e.button > 0) return;
+          e.preventDefault();
+          li.setPointerCapture(e.pointerId);
+          li.classList.add('dragging');
+          const onMove = ev => {
+            const sibs = [...list.children].filter(x => x !== li);
+            const idx = sibs.filter(s => { const r = s.getBoundingClientRect(); return ev.clientY > r.top + r.height / 2; }).length;
+            const ref = sibs[idx] || null;
+            if (li.nextElementSibling !== ref) { list.insertBefore(li, ref); save(); }
+          };
+          const onUp = () => {
+            li.classList.remove('dragging');
+            li.removeEventListener('pointermove', onMove);
+            li.removeEventListener('pointerup', onUp);
+            li.removeEventListener('pointercancel', onUp);
+          };
+          li.addEventListener('pointermove', onMove);
+          li.addEventListener('pointerup', onUp);
+          li.addEventListener('pointercancel', onUp);
+        });
+        list.append(li);
+      });
+      return h('div', null, h('div', { class: 'rankend' }, '▲ ', t(UI.most)), list, h('div', { class: 'rankend bottom' }, '▼ ', t(UI.least)));
+    },
+
+    cards(q) {
+      const a = get(q) || {};
+      set(q, a, true);
+      const box = h('div', { class: 'cardsq' });
+      const draw = () => {
+        box.replaceChildren();
+        const idx = q.items.findIndex(it => !(it.id in a));
+        if (idx === -1) {
+          box.append(
+            h('ul', { class: 'cardsum' }, ...q.items.map(it => {
+              const o = q.scaleOpts.find(x => x.id === a[it.id]);
+              const n = q.scaleOpts.indexOf(o);
+              return h('li', null, ico(it), h('span', { class: 'lbl' }, t(it.label)),
+                h('button', { type: 'button', class: 'chip c' + n, onclick: () => { delete a[it.id]; draw(); refreshNav(); } }, t(o.label)));
+            })),
+            h('p', { class: 'qhint' }, t(UI.cardsDone)));
+          refreshNav();
+          return;
+        }
+        const it = q.items[idx];
+        const stack = h('div', { class: 'stack' });
+        for (let k = Math.min(2, q.items.length - 1 - idx); k >= 1; k--) stack.append(h('div', { class: 'idea ghost g' + k }));
+        const card = h('div', { class: 'idea live' },
+          h('div', { class: 'idea-n' }, `${idx + 1} / ${q.items.length}`),
+          it.icon ? h('div', { class: 'idea-ico' }, it.icon) : null,
+          h('h3', null, t(it.label)),
+          it.desc ? h('p', null, t(it.desc)) : null);
+        stack.append(card);
+        const votes = h('div', { class: 'votes' }, ...q.scaleOpts.map((o, i) => h('button', {
+          type: 'button', class: 'vote v' + i, 'data-num': i + 1,
+          onclick: () => {
+            if (card.classList.contains('out')) return;
+            a[it.id] = o.id;
+            card.classList.add('out', 'out-' + i);
+            setTimeout(() => { draw(); refreshNav(); }, 330);
+          },
+        }, h('span', { class: 'k' }, i + 1), t(o.label))));
+        box.append(stack, votes);
+        if (idx > 0) box.append(h('button', { type: 'button', class: 'linkbtn', onclick: () => { delete a[q.items[idx - 1].id]; draw(); refreshNav(); } }, '↶ ', t(UI.undo)));
+      };
+      draw();
+      return box;
+    },
+
+    text(q) {
+      const max = q.maxlength || 1500;
+      const ta = h('textarea', { class: 'field big', rows: q.rows || 4, placeholder: t(q.placeholder), maxlength: max, autofocus: true });
+      ta.value = get(q) || '';
+      const cnt = h('span', { class: 'count' });
+      const wrap = h('div', { class: 'textwrap' + (q.wish ? ' wish' : '') });
+      let last = 0;
+      const upd = sparkle => {
+        set(q, ta.value);
+        cnt.textContent = `${ta.value.length} / ${max}`;
+        if (sparkle && q.wish && Date.now() - last > 90) { last = Date.now(); spark(wrap); }
+      };
+      ta.addEventListener('input', () => upd(true));
+      upd(false);
+      wrap.append(q.wish ? h('div', { class: 'wand', 'aria-hidden': 'true' }, '🪄') : null, ta,
+        h('div', { class: 'below' }, h('span', { class: 'hint' }, t(UI.ctrlEnter)), cnt));
+      return wrap;
+    },
+
+    form(q) {
+      const a = get(q) || {};
+      set(q, a, true);
+      const grid = h('div', { class: 'formgrid' });
+      q.fields.forEach((f, i) => {
+        const input = f.type === 'textarea'
+          ? h('textarea', { class: 'field', rows: 3 })
+          : h('input', { class: 'field', type: f.type === 'email' ? 'email' : 'text', autocomplete: f.autocomplete || 'off', list: f.type === 'country' ? 'countries' : null });
+        input.id = 'f_' + f.id;
+        input.value = a[f.id] || '';
+        if (f.placeholder) input.placeholder = t(f.placeholder);
+        if (i === 0) input.setAttribute('autofocus', '');
+        input.addEventListener('input', () => { a[f.id] = input.value; refreshNav(); });
+        grid.append(h('label', { class: 'fld' + (f.wide ? ' wide' : ''), for: input.id },
+          h('span', null, t(f.label), f.required ? null : h('em', null, ' · ' + t(UI.optional))), input));
+      });
+      if (q.fields.some(f => f.type === 'country')) grid.append(h('datalist', { id: 'countries' }, ...COUNTRIES.map(c => h('option', { value: c }))));
+      return h('div', null, grid, q.note ? h('p', { class: 'note' }, t(q.note)) : null);
+    },
+  };
+
+  function slider(q) {
+    const a = get(q);
+    const unit = q.unit || '';
+    const val = h('output', { class: 'bigval' + (a == null ? ' idle' : '') }, a == null ? '–' : a + unit);
+    const input = h('input', { type: 'range', min: q.min, max: q.max, step: q.step || 1, class: 'range' + (a == null ? ' idle' : ''), 'aria-label': t(q.title) });
+    input.value = a ?? Math.round((q.min + q.max) / 2);
+    const hint = h('p', { class: 'qhint center' }, t(UI.sliderHint));
+    hint.hidden = a != null;
+    const paint = () => input.style.setProperty('--p', ((input.value - q.min) / (q.max - q.min)) * 100 + '%');
+    const commit = () => {
+      set(q, +input.value);
+      val.textContent = input.value + unit;
+      val.classList.remove('idle'); input.classList.remove('idle');
+      hint.hidden = true;
+      paint();
+    };
+    input.addEventListener('input', commit);
+    input.addEventListener('pointerup', commit);
+    input.addEventListener('keyup', commit);
+    paint();
+    return h('div', { class: 'sliderwrap' }, val, input,
+      h('div', { class: 'ends' }, h('span', null, t(q.minLabel)), h('span', null, t(q.maxLabel))), hint);
+  }
+
+  /* ---------- Validierung ---------- */
+  function isEmpty(q) {
+    const a = get(q);
+    if (a == null || a === '') return true;
+    if (q.type === 'multi') return !a.sel.length;
+    if (q.type === 'text') return !a.trim();
+    if (q.type === 'form') return !Object.values(a).some(v => String(v).trim());
+    if (q.type === 'cards') return !Object.keys(a).length;
+    return false;
+  }
+  function valid(q) {
+    if (q.optional && isEmpty(q)) return true;
+    const a = get(q);
+    switch (q.type) {
+      case 'single': return a != null;
+      case 'scale': return a != null;
+      case 'multi': return a.sel.length > 0 && (!a.sel.includes('__other') || !!a.other.trim());
+      case 'rank': return Array.isArray(a);
+      case 'cards': return q.items.every(it => it.id in a);
+      case 'text': return (a || '').trim().length >= (q.minLength || 2);
+      case 'form': return q.fields.every(f => {
+        const v = (a[f.id] || '').trim();
+        if (f.required && !v) return false;
+        if (f.type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return false;
+        return true;
+      });
+    }
+    return true;
+  }
+
+  /* ---------- Bildschirme ---------- */
+  function welcome() {
+    const W = S.welcome;
+    const vars = { n: Q.length, min: minutes() };
+    const out = [
+      h('div', { class: 'eyebrow' }, t(W.eyebrow)),
+      h('h1', { class: 'hero' }, t(W.title)),
+      h('p', { class: 'lead' }, t(W.lead)),
+      h('div', { class: 'meta' }, ...W.meta.map(m => h('span', { class: 'pill' }, t(m, vars)))),
+    ];
+    if (S.languages.length > 1) {
+      out.push(h('div', { class: 'langpick' }, h('span', { class: 'muted' }, t(UI.chooseLang)),
+        h('div', { class: 'langbtns' }, ...S.languages.map(l => h('button', {
+          type: 'button', class: 'langbtn' + (l === lang ? ' sel' : ''), lang: l, onclick: () => { lang = l; render(0); },
+        }, LANG_NAMES[l] || l.toUpperCase())))));
+    }
+    out.push(h('div', { class: 'cta' },
+      h('button', { type: 'button', class: 'btn primary big', autofocus: true, disabled: Q.length ? null : true, onclick: start }, t(UI.start), ' →'),
+      h('span', { class: 'hint' }, t(UI.pressEnter))));
+    if (W.note) out.push(h('p', { class: 'note' }, t(W.note)));
+    if (params.has('export')) out.push(exportBox());
+    return out;
+  }
+
+  function hintFor(q) {
+    if (q.type === 'multi') return q.max ? t(UI.chooseUpTo, { n: q.max }) : t(UI.chooseAny);
+    if (q.type === 'rank') return t(UI.dragHint);
+    return '';
+  }
+
+  function question(q) {
+    const hint = hintFor(q);
+    return [
+      h('div', { class: 'eyebrow' }, `${t(UI.question)} ${state.step + 1} ${t(UI.of)} ${Q.length}`, q.optional ? h('span', { class: 'tag' }, t(UI.optional)) : null),
+      h('h2', { class: 'qtitle' }, t(q.title)),
+      q.sub ? h('p', { class: 'qsub' }, t(q.sub)) : null,
+      hint ? h('p', { class: 'qhint' }, hint) : null,
+      h('div', { class: 'qbody' }, TYPES[q.type](q)),
+    ];
+  }
+
+  function outro() {
+    const r = state.result || {};
+    const O = S.outro;
+    const out = [h('div', { class: 'done-badge' }, '✓'), h('h1', { class: 'hero' }, t(O.title)), h('p', { class: 'lead' }, t(O.text))];
+    if (r.test || !r.ok) {
+      out.push(h('div', { class: 'testbox' },
+        h('p', null, r.test ? t(UI.testMode) : `${t(UI.sendError)} (${r.err})`),
+        r.payload ? h('button', { type: 'button', class: 'btn ghost', onclick: () => download([r.payload], 'json') }, '⬇ ', t(UI.saveFile)) : null));
+    }
+    if (params.has('kiosk')) {
+      out.push(h('div', { class: 'cta' }, h('button', { type: 'button', class: 'btn primary', onclick: reset }, '↻ ', t(UI.restart))));
+      clearTimeout(advanceTimer);
+      advanceTimer = setTimeout(reset, 25000);
+    }
+    if (S.confetti !== false) setTimeout(confetti, 250);
+    return out;
+  }
+
+  function exportBox() {
+    let rows = [];
+    try { rows = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { /* leer */ }
+    return h('div', { class: 'testbox' }, h('p', null, `${t(UI.exportLocal)}: ${rows.length}`),
+      h('div', { class: 'cta' },
+        h('button', { type: 'button', class: 'btn ghost', onclick: () => download(rows, 'json') }, '⬇ JSON'),
+        h('button', { type: 'button', class: 'btn ghost', onclick: () => download(rows, 'csv') }, '⬇ CSV (Excel)')));
+  }
+
+  /* ---------- Ablauf ---------- */
+  function render(dir = 1) {
+    clearTimeout(advanceTimer);
+    document.documentElement.lang = lang;
+    document.title = t(S.welcome.title);
+    renderLangs();
+    const screen = h('section', { class: 'screen ' + (dir < 0 ? 'from-top' : 'from-bottom') });
+    if (state.step < 0) screen.append(...welcome().filter(Boolean));
+    else if (state.step >= Q.length) screen.append(...outro());
+    else screen.append(...question(Q[state.step]).filter(Boolean));
+    stage.replaceChildren(screen);
+    renderNav();
+    updateProgress();
+    renderCaption();
+    if (EDIT) drawEditor();
+    const f = screen.querySelector('[autofocus]');
+    if (f && matchMedia('(pointer:fine)').matches) setTimeout(() => f.focus({ preventScroll: true }), 380);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderCaption() {
+    const host = document.getElementById('visual');
+    if (!host || !S.sceneCaption) return;
+    let cap = document.getElementById('scene-cap');
+    if (!cap) { cap = h('div', { id: 'scene-cap' }); host.append(cap); }
+    cap.textContent = t(S.sceneCaption);
+  }
+
+  function renderLangs() {
+    langBox.replaceChildren();
+    if (S.languages.length < 2) return;
+    S.languages.forEach(l => langBox.append(h('button', {
+      type: 'button', class: l === lang ? 'sel' : '', lang: l, title: LANG_NAMES[l] || l,
+      onclick: () => { lang = l; render(0); },
+    }, l.toUpperCase())));
+  }
+
+  function renderNav() {
+    nav.replaceChildren();
+    const inQ = state.step >= 0 && state.step < Q.length;
+    nav.hidden = !inQ;
+    if (!inQ) return;
+    nav.append(
+      h('button', { type: 'button', class: 'btn ghost', onclick: back }, '← ', t(UI.back)),
+      h('div', { class: 'navright' }, h('span', { class: 'hint' }, t(UI.pressEnter)),
+        h('button', { type: 'button', class: 'btn primary', id: 'nextbtn', onclick: next })));
+    refreshNav();
+  }
+
+  function refreshNav() {
+    const b = document.getElementById('nextbtn');
+    const q = Q[state.step];
+    if (!b || !q || state.sending) return;
+    const last = state.step === Q.length - 1;
+    b.disabled = !valid(q);
+    b.textContent = last ? t(UI.submit) + ' ✓' : (q.optional && isEmpty(q) ? t(UI.skip) : t(UI.next)) + ' →';
+  }
+
+  function updateProgress() {
+    const n = Q.length, s = state.step;
+    const f = s < 0 ? 0 : s >= n ? 1 : s / n;
+    bar.style.width = f * 100 + '%';
+    counter.textContent = s >= 0 && s < n ? `${s + 1} / ${n}` : '';
+    window.dispatchEvent(new CustomEvent('survey:progress', { detail: { f, active: s >= 0 } }));
+  }
+
+  function go(i, dir) { state.step = i; render(dir); }
+  function start() { if (!Q.length) return; state.startedAt = state.startedAt || Date.now(); go(0, 1); }
+  function back() { go(state.step - 1, -1); }
+  function next() {
+    const q = Q[state.step];
+    if (!q) return;
+    if (!valid(q)) { retrigger(stage.querySelector('.qbody'), 'shake'); return; }
+    if (state.step === Q.length - 1) submit();
+    else go(state.step + 1, 1);
+  }
+  function reset() {
+    state.step = -1; state.answers = {}; state.startedAt = null; state.result = null;
+    render(-1);
+  }
+
+  /* ---------- Editor-Sidebar ---------- */
+  function applySelection(ids) {
+    const cur = Q[state.step];
+    const onOutro = state.step >= Q.length;
+    selected = new Set(ids);
+    Q = ALL.filter(q => selected.has(q.id));
+    saveEd({ questions: Q.map(q => q.id) });
+    if (onOutro) state.step = Q.length;
+    else if (state.step >= 0) {
+      const idx = Q.indexOf(cur);
+      state.step = idx >= 0 ? idx : Q.length ? Math.min(state.step, Q.length - 1) : -1;
+    }
+    render(0);
+  }
+
+  function setEditorOpen(open) {
+    document.body.classList.toggle('editor-open', open);
+    saveEd({ open });
+  }
+
+  function buildEditor() {
+    document.body.append(
+      h('aside', { id: 'editor', 'aria-label': 'Umfrage-Editor' }),
+      h('button', { id: 'editor-toggle', type: 'button', onclick: () => setEditorOpen(true), title: 'Editor öffnen' }, h('span', null, 'Fragen & Formulierung')));
+    setEditorOpen(ed.open !== false);
+  }
+
+  function drawEditor() {
+    const panel = document.getElementById('editor');
+    if (!panel) return;
+    const oldList = panel.querySelector('.ed-list');
+    const scroll = oldList ? oldList.scrollTop : 0;
+    const link = (label, fn) => h('button', { type: 'button', class: 'ed-link', onclick: fn }, label);
+    const V = S.variants || {};
+    const list = h('ol', { class: 'ed-list' }, ...ALL.map(q => {
+      const on = selected.has(q.id);
+      const pos = Q.indexOf(q);
+      const cb = h('input', { type: 'checkbox', 'aria-label': 'Frage einbeziehen' });
+      cb.checked = on;
+      cb.addEventListener('change', () => applySelection(cb.checked ? [...selected, q.id] : [...selected].filter(id => id !== q.id)));
+      return h('li', { class: (on ? 'on' : 'off') + (on && pos === state.step ? ' cur' : '') },
+        h('label', { class: 'ed-check' }, cb),
+        h('button', {
+          type: 'button', class: 'ed-q', title: 'In der Vorschau anzeigen',
+          onclick: () => {
+            if (!on) applySelection([...selected, q.id]);
+            state.startedAt = state.startedAt || Date.now();
+            go(Q.indexOf(q), 1);
+          },
+        },
+        h('span', { class: 'ed-num' }, on ? pos + 1 : '·'),
+        h('span', { class: 'ed-txt' }, h('span', { class: 'ed-title' }, tl(q.title, 'de')),
+          h('span', { class: 'ed-meta' }, TYPE_LABEL[q.type], q.optional ? ' · optional' : '', q.default === false ? h('em', { class: 'ed-new' }, 'neu') : null))));
+    }));
+    panel.replaceChildren(
+      h('div', { class: 'ed-head' },
+        h('div', null, h('b', null, 'Umfrage-Editor'), h('small', null, 'Nur für das Projektteam – nicht Teil der finalen Umfrage')),
+        h('button', { type: 'button', class: 'ed-x', 'aria-label': 'Editor einklappen', title: 'Einklappen', onclick: () => setEditorOpen(false) }, '‹')),
+      Object.keys(V).length ? h('div', { class: 'ed-sec' },
+        h('div', { class: 'ed-label' }, 'Formulierung'),
+        h('div', { class: 'seg' }, ...Object.entries(V).map(([k, v]) => h('button', {
+          type: 'button', class: k === variant ? 'sel' : '', onclick: () => { variant = k; saveEd({ variant }); render(0); },
+        }, v.label))),
+        V[variant] ? h('p', { class: 'ed-hint' }, V[variant].hint) : null) : null,
+      h('div', { class: 'ed-sec ed-grow' },
+        h('div', { class: 'ed-row' },
+          h('div', { class: 'ed-label' }, `Fragen · ${Q.length} von ${ALL.length} · ca. ${minutes()} Min.`),
+          h('div', { class: 'ed-links' }, link('Standard', () => applySelection(DEFAULT_IDS)), link('Alle', () => applySelection(ALL.map(q => q.id))), link('Keine', () => applySelection([])))),
+        list),
+      h('div', { class: 'ed-foot' },
+        h('button', { type: 'button', class: 'btn primary', disabled: Q.length ? null : true, onclick: exportFinal }, '⬇ Finale Umfrage herunterladen'),
+        h('p', { class: 'ed-hint' }, `Erzeugt eine HTML-Datei mit Formulierung „${V[variant]?.label || ''}“ und den ${Q.length} gewählten Fragen – ohne Editor, bereit zum Versand.`)));
+    list.scrollTop = scroll;
+  }
+
+  function exportFinal() {
+    const doc = document.documentElement.cloneNode(true);
+    const $$ = sel => doc.querySelector(sel);
+    ['#stage', '#nav', '#langs', '#counter', '#visual'].forEach(sel => $$(sel)?.replaceChildren());
+    $$('#nav')?.setAttribute('hidden', '');
+    $$('#visual')?.removeAttribute('class');
+    doc.querySelectorAll('#editor, #editor-toggle, .drop, .spark').forEach(el => el.remove());
+    $$('body').classList.remove('editor-open');
+    const barEl = $$('#progress > i');
+    if (barEl) barEl.removeAttribute('style');
+    $$('#preset').textContent = `window.PRESET = ${JSON.stringify({ locked: true, variant, questions: Q.map(q => q.id) })};`;
+    const html = '<!doctype html>\n' + doc.outerHTML;
+    const a = h('a', { href: URL.createObjectURL(new Blob([html], { type: 'text/html' })), download: `${S.exportName || 'Umfrage_final'}_${(S.variants?.[variant]?.label || variant)}_${Q.length}-Fragen.html` });
+    document.body.append(a); a.click(); a.remove();
+  }
+
+  /* ---------- Absenden & Export ---------- */
+  function readable(q, a, L) {
+    if (a == null) return '';
+    const lab = (list, id) => tl(list.find(o => o.id === id)?.label, L);
+    switch (q.type) {
+      case 'single': return lab(q.options, a);
+      case 'multi': return a.sel.map(id => (id === '__other' ? `${tl(UI.other, L).replace(' …', '')}: ${a.other}` : lab(q.options, id))).join('; ');
+      case 'rank': return a.map((id, i) => `${i + 1}. ${lab(q.items, id)}`).join(' | ');
+      case 'cards': return Object.fromEntries(q.items.filter(it => it.id in a).map(it => [tl(it.label, L), lab(q.scaleOpts, a[it.id])]));
+      case 'form': return Object.fromEntries(q.fields.map(f => [tl(f.label, L), a[f.id] || '']));
+      default: return a;
+    }
+  }
+
+  function buildPayload() {
+    const L = S.analysisLang || 'de';
+    return {
+      survey: S.id,
+      variant,
+      lang,
+      submittedAt: new Date().toISOString(),
+      durationSec: Math.round((Date.now() - (state.startedAt || Date.now())) / 1000),
+      answers: Object.fromEntries(Q.map(q => [q.id, state.answers[q.id] ?? null])),
+      readable: Object.fromEntries(Q.map(q => [`[${q.id}] ${tl(q.title, L)}`, readable(q, state.answers[q.id], L)])),
+    };
+  }
+
+  async function submit() {
+    if (state.sending) return;
+    state.sending = true;
+    const b = document.getElementById('nextbtn');
+    if (b) { b.disabled = true; b.textContent = t(UI.sending); }
+    const payload = buildPayload();
+    let ok = false, err = null;
+    if (S.endpoint) {
+      try {
+        const r = await fetch(S.endpoint, { method: 'POST', headers: { 'Content-Type': S.endpointContentType || 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+        ok = r.ok;
+        if (!ok) err = 'HTTP ' + r.status;
+      } catch (e) { err = e.message; }
+    }
+    try {
+      const rows = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+      rows.push(payload);
+      localStorage.setItem(LS_KEY, JSON.stringify(rows));
+    } catch { /* privater Modus o. Ä. */ }
+    state.result = { ok, err, payload, test: !S.endpoint };
+    state.sending = false;
+    go(Q.length, 1);
+  }
+
+  function toCSV(rows) {
+    const cols = [...new Set(rows.flatMap(r => Object.keys(r.readable || {})))];
+    const esc = v => {
+      v = v == null ? '' : typeof v === 'object' ? Object.entries(v).map(([k, x]) => `${k}: ${x}`).join(' | ') : String(v);
+      return '"' + v.replace(/"/g, '""') + '"';
+    };
+    const head = ['submittedAt', 'lang', 'variant', 'durationSec', ...cols];
+    return '﻿' + [head.map(esc).join(';'), ...rows.map(r => [r.submittedAt, r.lang, r.variant, r.durationSec, ...cols.map(c => r.readable[c])].map(esc).join(';'))].join('\r\n');
+  }
+
+  function download(rows, kind) {
+    const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+    const body = kind === 'csv' ? toCSV(rows) : JSON.stringify(rows.length === 1 ? rows[0] : rows, null, 2);
+    const blob = new Blob([body], { type: kind === 'csv' ? 'text/csv;charset=utf-8' : 'application/json' });
+    const a = h('a', { href: URL.createObjectURL(blob), download: `${S.id}-${stamp}.${kind}` });
+    document.body.append(a); a.click(); a.remove();
+  }
+
+  /* ---------- Effekte ---------- */
+  function spark(host) {
+    const s = h('span', { class: 'spark', style: `left:${10 + Math.random() * 80}%;top:${20 + Math.random() * 60}%` }, ['✦', '✧', '·', '⋆'][Math.floor(Math.random() * 4)]);
+    host.append(s);
+    setTimeout(() => s.remove(), 900);
+  }
+
+  function confetti() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const colors = S.confetti || ['#36d6ff', '#7cf5c8', '#ffffff', '#1e88ff'];
+    for (let i = 0; i < 70; i++) {
+      const d = h('span', {
+        class: 'drop',
+        style: `left:${Math.random() * 100}vw;background:${colors[i % colors.length]};animation-duration:${2.2 + Math.random() * 2.2}s;animation-delay:${Math.random() * 0.6}s;--r:${Math.random() * 360}deg;transform:scale(${0.6 + Math.random() * 0.8})`,
+      });
+      document.body.append(d);
+      setTimeout(() => d.remove(), 5200);
+    }
+  }
+
+  /* ---------- Tastatur ---------- */
+  document.addEventListener('keydown', e => {
+    if (state.sending || e.target.closest?.('#editor')) return;
+    const tag = e.target.tagName;
+    if (e.key === 'Enter') {
+      // Enter auf Antwort-Buttons = weiter (Auswahl per Klick, Buchstabe oder Leertaste)
+      if (tag === 'BUTTON' && !e.target.closest('.opt, .npsbtn')) return;
+      if (tag === 'TEXTAREA' && !(e.metaKey || e.ctrlKey)) return;
+      e.preventDefault();
+      if (state.step < 0) start();
+      else if (state.step < Q.length) next();
+      return;
+    }
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key.length === 1 ? e.key.toUpperCase() : '';
+    if (!/^[A-Z0-9]$/.test(k)) return;
+    const el = stage.querySelector(`[data-key="${k}"]`) || stage.querySelector(`[data-num="${k}"]`);
+    if (el) el.click();
+  });
+
+  const COUNTRIES = ['Germany', 'Austria', 'Switzerland', 'France', 'Italy', 'Spain', 'Portugal', 'Netherlands', 'Belgium', 'Luxembourg', 'Denmark', 'Sweden', 'Norway', 'Finland', 'Poland', 'Czech Republic', 'Slovakia', 'Hungary', 'Romania', 'Bulgaria', 'Croatia', 'Slovenia', 'Serbia', 'Greece', 'Turkey', 'Ireland', 'United Kingdom', 'Ukraine', 'Lithuania', 'Latvia', 'Estonia', 'United States', 'Canada', 'Mexico', 'Brazil', 'Argentina', 'Chile', 'Colombia', 'Peru', 'China', 'India', 'Japan', 'South Korea', 'Taiwan', 'Singapore', 'Malaysia', 'Thailand', 'Vietnam', 'Indonesia', 'Philippines', 'Australia', 'New Zealand', 'South Africa', 'Egypt', 'Morocco', 'Nigeria', 'Kenya', 'Saudi Arabia', 'United Arab Emirates', 'Israel', 'Qatar'];
+
+  if (EDIT) buildEditor();
+  render(1);
+})();
+
+</script>
+</body>
+</html>
