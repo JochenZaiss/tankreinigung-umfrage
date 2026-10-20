@@ -180,6 +180,7 @@ body.ext .idea.live { background: linear-gradient(150deg, var(--petrol), #022638
 .fld { display: grid; gap: 7px; font-size: 14px; font-weight: 600; }
 .fld em { font-weight: 400; font-style: normal; color: var(--muted); }
 .fld.wide { grid-column: 1 / -1; }
+.fld-notice { display: block; margin: 8px 0 2px; padding: 10px 14px; border-left: 3px solid var(--accent2); border-radius: 0 10px 10px 0; background: var(--accent-soft); font-size: 15px; font-weight: 700; color: var(--fg); }
 .note { font-size: 13px; color: var(--muted); margin-top: 18px; line-height: 1.5; max-width: 62ch; }
 
 #nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0 26px; }
@@ -293,13 +294,14 @@ body.editor-open #editor-toggle { display: none; }
 <script id="preset">window.PRESET = {"locked":true,"variant":"s"};</script>
 <script>
 /* Externe Umfrage: Kunden, Anlagenbauer, Planer, Dienstleister.
- * Fragenpool mit 20 Fragen; „default: false" = zusätzliche Frage, im Editor abwählbar/zuwählbar.
+ * Fragenpool mit 13 Fragen (Standard: 10); „default: false" = zusätzliche Frage, im Editor zuwählbar.
  * Formulierungsvarianten: s = sachlich, p = professionell.  L(de, en, fr, es) · V(sachlich, professionell)
  */
 (() => {
 const L = (de, en, fr, es) => ({ de, en, fr, es });
 const V = (s, p) => ({ s, p });
 const same = x => L(x, x, x, x);
+const same2 = x => V(x, x); // gleiche Formulierung in beiden Varianten
 
 window.SURVEY = {
   id: 'tankclean-future-extern-2026',
@@ -350,7 +352,7 @@ window.SURVEY = {
         { id: 'pharma', label: L('Pharma & Biotech', 'Pharma & biotech', 'Pharmacie & biotech', 'Farma y biotecnología') },
         { id: 'chemicals', label: L('Chemie', 'Chemicals', 'Chimie', 'Química') },
         { id: 'cosmetics', label: L('Kosmetik & Körperpflege', 'Cosmetics & personal care', 'Cosmétique & soins', 'Cosmética y cuidado personal') },
-        { id: 'other', label: L('Andere Branche', 'Other industry', 'Autre secteur', 'Otro sector') },
+        { id: 'other', text: true, label: L('Andere Branche', 'Other industry', 'Autre secteur', 'Otro sector') },
       ],
     },
     {
@@ -362,37 +364,28 @@ window.SURVEY = {
         { id: 'oem', label: L('Behälter- oder Anlagenbauer (OEM)', 'Tank or plant manufacturer (OEM)', 'Fabricant de cuves ou d’installations (OEM)', 'Fabricante de tanques o instalaciones (OEM)') },
         { id: 'engineering', label: L('Planung & Engineering', 'Planning & engineering', 'Études & ingénierie', 'Planificación e ingeniería') },
         { id: 'service', label: L('Reinigungs- oder Servicedienstleister', 'Cleaning or service provider', 'Prestataire de nettoyage ou de services', 'Proveedor de limpieza o servicios') },
-        { id: 'other', label: L('Sonstige', 'Other', 'Autre', 'Otro') },
+        { id: 'other', text: true, label: L('Sonstige', 'Other', 'Autre', 'Otro') },
       ],
     },
     {
-      id: 'tank_size', type: 'single', layout: 'row', default: false,
-      title: V(L('Welche Behältergrößen reinigen Sie überwiegend?', 'Which tank sizes do you mainly clean?', 'Quelles tailles de cuves nettoyez-vous principalement ?', '¿Qué tamaños de tanque limpia principalmente?'),
-        L('Welche Behältervolumina sind in Ihrem Betrieb vorrangig zu reinigen?', 'Which tank volumes predominantly need to be cleaned at your site?', 'Quels volumes de cuves doivent principalement être nettoyés sur votre site ?', '¿Qué volúmenes de tanque deben limpiarse principalmente en su planta?')),
-      options: [
-        { id: 'lt1', label: same('< 1 m³') }, { id: '1_10', label: same('1–10 m³') }, { id: '10_50', label: same('10–50 m³') },
-        { id: '50_200', label: same('50–200 m³') }, { id: 'gt200', label: same('> 200 m³') },
-      ],
-    },
-    {
-      id: 'cleaning_method', type: 'multi', default: false,
+      id: 'cleaning_method', type: 'multi',
       title: V(L('Womit reinigen Sie Ihre Behälter heute?', 'What do you use to clean your tanks today?', 'Avec quoi nettoyez-vous vos cuves aujourd’hui ?', '¿Con qué limpia hoy sus tanques?'),
         L('Welche Reinigungstechnik setzen Sie derzeit ein?', 'Which cleaning technology do you currently use?', 'Quelle technique de nettoyage utilisez-vous actuellement ?', '¿Qué tecnología de limpieza utiliza actualmente?')),
       options: [
         { id: 'static', label: L('Statische Sprühkugeln', 'Static spray balls', 'Boules de lavage statiques', 'Bolas de pulverización estáticas') },
         { id: 'rotating', label: L('Rotierende Sprühköpfe', 'Rotating spray heads', 'Têtes de lavage rotatives', 'Cabezales rotativos de pulverización') },
-        { id: 'jet', label: L('Zielstrahlreiniger (Rotating Jet Heads)', 'Rotating jet heads (target jet cleaners)', 'Têtes de lavage à jets rotatifs', 'Cabezales de chorro rotativo') },
+        { id: 'jet', label: L('Zielstrahlreiniger', 'Tank cleaning machines', 'Têtes de lavage à jets rotatifs', 'Cabezales de chorro rotativo') },
         { id: 'manual', label: L('Manuelle Reinigung (z. B. Lanze)', 'Manual cleaning (e.g. lance)', 'Nettoyage manuel (p. ex. lance)', 'Limpieza manual (p. ej. lanza)') },
         { id: 'external', label: L('Externer Dienstleister', 'External service provider', 'Prestataire externe', 'Proveedor externo') },
         { id: 'unknown', exclusive: true, label: L('Nicht bekannt', 'Not known', 'Inconnu', 'No lo sé') },
       ],
     },
     {
-      id: 'frequency', type: 'single', default: false,
+      id: 'frequency', type: 'single',
       title: V(L('Wie oft werden Ihre Behälter gereinigt?', 'How often are your tanks cleaned?', 'À quelle fréquence vos cuves sont-elles nettoyées ?', '¿Con qué frecuencia se limpian sus tanques?'),
         L('In welchem Intervall erfolgt die Reinigung Ihrer Behälter typischerweise?', 'At what interval are your tanks typically cleaned?', 'À quel intervalle vos cuves sont-elles généralement nettoyées ?', '¿Con qué intervalo se limpian normalmente sus tanques?')),
       options: [
-        { id: 'batch', label: L('Nach jeder Charge bzw. jedem Produktwechsel', 'After every batch or product change', 'Après chaque lot ou changement de produit', 'Tras cada lote o cambio de producto') },
+        { id: 'several_daily', label: L('Mehrmals täglich', 'Several times a day', 'Plusieurs fois par jour', 'Varias veces al día') },
         { id: 'daily', label: L('Täglich', 'Daily', 'Quotidiennement', 'A diario') },
         { id: 'weekly', label: L('Wöchentlich', 'Weekly', 'Chaque semaine', 'Semanalmente') },
         { id: 'rarely', label: L('Seltener', 'Less often', 'Moins souvent', 'Con menor frecuencia') },
@@ -413,33 +406,10 @@ window.SURVEY = {
       options: [
         { id: 'downtime', label: L('Lange Reinigungs- und Stillstandszeiten', 'Long cleaning and downtimes', 'Temps de nettoyage et d’arrêt trop longs', 'Largos tiempos de limpieza y parada') },
         { id: 'consumption', label: L('Hoher Verbrauch an Wasser, Chemie und Energie', 'High consumption of water, chemicals and energy', 'Forte consommation d’eau, de produits chimiques et d’énergie', 'Alto consumo de agua, químicos y energía') },
-        { id: 'proof', label: L('Fehlender Nachweis des Reinigungsergebnisses', 'No verification of the cleaning result', 'Absence de preuve du résultat de nettoyage', 'Falta de verificación del resultado de limpieza') },
-        { id: 'residues', label: L('Rückstände und Sprühschatten', 'Residues and spray shadows', 'Résidus et zones d’ombre', 'Residuos y zonas de sombra') },
+        { id: 'validation', label: L('Validierung und Dokumentation', 'Validation and documentation', 'Validation et documentation', 'Validación y documentación') },
         { id: 'failures', label: L('Ausfälle und Verschleiß der Reinigungsgeräte', 'Failures and wear of cleaning devices', 'Pannes et usure des équipements de nettoyage', 'Fallos y desgaste de los equipos de limpieza') },
-        { id: 'validation', label: L('Aufwand für Validierung und Dokumentation', 'Effort for validation and documentation', 'Charge de validation et de documentation', 'Esfuerzo de validación y documentación') },
         { id: 'knowhow', label: L('Fehlendes Know-how oder Personal', 'Lack of know-how or staff', 'Manque de savoir-faire ou de personnel', 'Falta de conocimientos o de personal') },
         { id: 'none', exclusive: true, label: L('Keine – die Reinigung funktioniert zufriedenstellend', 'None – cleaning works satisfactorily', 'Aucune – le nettoyage fonctionne de manière satisfaisante', 'Ninguna: la limpieza funciona satisfactoriamente') },
-      ],
-    },
-    {
-      id: 'downtime_share', type: 'scale', slider: true, min: 0, max: 50, step: 1, unit: ' %', default: false,
-      title: V(L('Wie viel Ihrer Produktionszeit entfällt schätzungsweise auf Reinigung?', 'Roughly how much of your production time is taken up by cleaning?', 'Selon vous, quelle part de votre temps de production est consacrée au nettoyage ?', 'Aproximadamente, ¿cuánto de su tiempo de producción se dedica a la limpieza?'),
-        L('Welcher Anteil der Anlagenverfügbarkeit entfällt nach Ihrer Schätzung auf Reinigungsprozesse?', 'In your estimation, what share of plant availability is taken up by cleaning processes?', 'Selon votre estimation, quelle part de la disponibilité des installations est absorbée par les processus de nettoyage ?', 'Según su estimación, ¿qué parte de la disponibilidad de la planta corresponde a procesos de limpieza?')),
-      minLabel: same('0 %'), maxLabel: same('≥ 50 %'),
-    },
-    {
-      id: 'priorities', type: 'rank',
-      title: V(L('Was ist Ihnen bei der Reinigung am wichtigsten?', 'What matters most to you in cleaning?', 'Qu’est-ce qui compte le plus pour vous dans le nettoyage ?', '¿Qué es lo más importante para usted en la limpieza?'),
-        L('Bitte priorisieren Sie die folgenden Anforderungen an eine Reinigungslösung.', 'Please prioritise the following requirements for a cleaning solution.', 'Veuillez hiérarchiser les exigences suivantes pour une solution de nettoyage.', 'Priorice los siguientes requisitos para una solución de limpieza.')),
-      sub: V(L('Bitte bringen Sie die Punkte in eine Reihenfolge – oben steht das Wichtigste.', 'Please put the items in order – most important at the top.', 'Veuillez classer les éléments – le plus important en haut.', 'Ordene los elementos: lo más importante arriba.'),
-        L('Ordnen Sie die Kriterien nach ihrer Bedeutung für Ihr Unternehmen.', 'Rank the criteria by their importance to your company.', 'Classez les critères selon leur importance pour votre entreprise.', 'Ordene los criterios según su importancia para su empresa.')),
-      items: [
-        { id: 'speed', label: L('Kurze Reinigungszeit, höhere Anlagenverfügbarkeit', 'Short cleaning time, higher plant availability', 'Nettoyage rapide, meilleure disponibilité', 'Limpieza rápida, mayor disponibilidad') },
-        { id: 'resources', label: L('Geringer Verbrauch an Wasser, Chemie und Energie', 'Low consumption of water, chemicals and energy', 'Faible consommation d’eau, de chimie et d’énergie', 'Bajo consumo de agua, químicos y energía') },
-        { id: 'reliability', label: L('Prozesssicherheit und Reinigungsnachweis', 'Process reliability and cleaning verification', 'Fiabilité du process et preuve de nettoyage', 'Fiabilidad del proceso y verificación de limpieza') },
-        { id: 'capex', label: L('Niedrige Investitionskosten', 'Low investment cost', 'Faible coût d’investissement', 'Bajo coste de inversión') },
-        { id: 'maintenance', label: L('Geringer Wartungsaufwand, lange Lebensdauer', 'Low maintenance, long service life', 'Peu d’entretien, longue durée de vie', 'Poco mantenimiento, larga vida útil') },
-        { id: 'support', label: L('Fachkundige Beratung und schneller Service', 'Expert advice and fast service', 'Conseil expert et service rapide', 'Asesoramiento experto y servicio rápido') },
       ],
     },
     {
@@ -465,18 +435,12 @@ window.SURVEY = {
         { id: 'low', label: V(L('Nicht relevant', 'Not relevant', 'Non pertinent', 'No relevante'), L('Kein Nutzen', 'No benefit', 'Aucune utilité', 'Ninguna utilidad')) },
       ],
       items: [
-        { id: 'live_proof', label: L('Reinigungsnachweis in Echtzeit', 'Real-time cleaning verification', 'Preuve de nettoyage en temps réel', 'Verificación de limpieza en tiempo real'),
-          desc: L('Sensoren bestätigen während des Prozesses, dass der Behälter sauber ist – inklusive automatischem Protokoll.', 'Sensors confirm during the process that the tank is clean – including an automatic report.', 'Des capteurs confirment pendant le process que la cuve est propre – rapport automatique inclus.', 'Sensores confirman durante el proceso que el tanque está limpio, con informe automático.') },
         { id: 'predictive', label: L('Vorausschauende Wartung', 'Predictive maintenance', 'Maintenance prédictive', 'Mantenimiento predictivo'),
           desc: L('Das Reinigungsgerät meldet Wartungsbedarf, bevor es ausfällt.', 'The cleaning device reports maintenance needs before it fails.', 'L’équipement de nettoyage signale le besoin d’entretien avant la panne.', 'El equipo de limpieza avisa de la necesidad de mantenimiento antes de fallar.') },
-        { id: 'simulation', label: L('Reinigungssimulation vorab', 'Cleaning simulation in advance', 'Simulation du nettoyage en amont', 'Simulación de limpieza previa'),
-          desc: L('Vor der Investition digital prüfen, wie gut Ihr Behälter gereinigt wird – inklusive Zeit und Verbrauch.', 'Check digitally before investing how well your tank will be cleaned – including time and consumption.', 'Vérifier numériquement avant l’investissement la qualité du nettoyage de votre cuve – durée et consommation comprises.', 'Comprobar digitalmente antes de invertir lo bien que se limpiará su tanque, incluidos tiempo y consumo.') },
         { id: 'self_optimizing', label: L('Selbstoptimierende Reinigung', 'Self-optimising cleaning', 'Nettoyage auto-optimisé', 'Limpieza autooptimizada'),
-          desc: L('Das System passt Zeit, Druck und Medien automatisch an den Verschmutzungsgrad an.', 'The system automatically adapts time, pressure and media to the level of soiling.', 'Le système adapte automatiquement durée, pression et fluides au degré d’encrassement.', 'El sistema ajusta automáticamente tiempo, presión y medios al grado de suciedad.') },
-        { id: 'remote', label: L('Fernunterstützung durch Experten', 'Remote expert support', 'Assistance d’experts à distance', 'Asistencia remota de expertos'),
-          desc: L('Reinigungsexperten unterstützen Sie per Video oder App direkt an der Anlage.', 'Cleaning experts support you via video or app directly at the plant.', 'Des experts du nettoyage vous assistent par vidéo ou application, directement sur l’installation.', 'Expertos en limpieza le asisten por vídeo o app directamente en la instalación.') },
+          desc: L('Das System passt seinen Reinigungsprozess eigenständig an, um Zeit, Medieneinsatz oder Energie zu sparen.', 'The system adapts its cleaning process independently to save time, media or energy.', 'Le système adapte de lui-même son processus de nettoyage afin d’économiser du temps, des fluides ou de l’énergie.', 'El sistema adapta su proceso de limpieza de forma autónoma para ahorrar tiempo, medios o energía.') },
         { id: 'audit', label: L('Reinigungsanalyse vor Ort', 'On-site cleaning audit', 'Audit de nettoyage sur site', 'Auditoría de limpieza in situ'),
-          desc: L('Experten analysieren Ihre Reinigungsprozesse und zeigen Einsparpotenziale bei Zeit, Wasser und Kosten auf.', 'Experts analyse your cleaning processes and identify savings in time, water and cost.', 'Des experts analysent vos processus de nettoyage et identifient les économies de temps, d’eau et de coûts.', 'Expertos analizan sus procesos de limpieza e identifican ahorros de tiempo, agua y costes.') },
+          desc: L('Experten analysieren und validieren Ihren Reinigungsprozess und zeigen Optimierungspotenziale auf.', 'Experts analyse and validate your cleaning process and identify potential for optimisation.', 'Des experts analysent et valident votre processus de nettoyage et identifient les potentiels d’optimisation.', 'Expertos analizan y validan su proceso de limpieza e identifican potenciales de optimización.') },
       ],
     },
     {
@@ -495,12 +459,11 @@ window.SURVEY = {
       id: 'service_model', type: 'single',
       title: V(L('Angenommen, Sie würden keine Reinigungstechnik mehr kaufen, sondern die Reinigung als Dienstleistung beziehen: Wäre das für Sie denkbar?', 'Suppose you no longer bought cleaning equipment but procured cleaning as a service: would that be conceivable for you?', 'Imaginons que vous n’achetiez plus d’équipement de nettoyage, mais le nettoyage en tant que service : serait-ce envisageable pour vous ?', 'Suponga que ya no compra equipos de limpieza, sino la limpieza como servicio: ¿sería concebible para usted?'),
         L('Wie bewerten Sie ein Betreibermodell, bei dem Sie die Reinigungsleistung statt der Reinigungstechnik beziehen?', 'How would you assess an operator model in which you procure the cleaning performance rather than the cleaning equipment?', 'Comment évaluez-vous un modèle dans lequel vous achetez la prestation de nettoyage plutôt que l’équipement ?', '¿Cómo valora un modelo en el que adquiere el rendimiento de limpieza en lugar del equipo de limpieza?')),
-      sub: V(L('Hardware, Wartung, Überwachung und Dokumentation wären inklusive – abgerechnet im Abonnement oder pro Reinigung.', 'Hardware, maintenance, monitoring and documentation would be included – billed as a subscription or per cleaning cycle.', 'Matériel, maintenance, surveillance et documentation seraient inclus – facturés par abonnement ou par cycle de nettoyage.', 'Hardware, mantenimiento, supervisión y documentación incluidos, facturados por suscripción o por ciclo de limpieza.'),
-        L('Leistungsumfang: Bereitstellung der Hardware, Wartung, Zustandsüberwachung und Reinigungsnachweis; Abrechnung als Abonnement oder nutzungsbasiert (Pay-per-Clean).', 'Scope: provision of hardware, maintenance, condition monitoring and cleaning verification; billed as a subscription or usage-based (pay-per-clean).', 'Périmètre : mise à disposition du matériel, maintenance, surveillance d’état et preuve de nettoyage ; facturation par abonnement ou à l’usage (pay-per-clean).', 'Alcance: suministro del hardware, mantenimiento, supervisión del estado y verificación de limpieza; facturación por suscripción o por uso (pay-per-clean).')),
+      sub: V(L('Hardware, Wartung, Überwachung und Dokumentation wären inklusive.', 'Hardware, maintenance, monitoring and documentation would be included.', 'Matériel, maintenance, surveillance et documentation seraient inclus.', 'Hardware, mantenimiento, supervisión y documentación incluidos.'),
+        L('Leistungsumfang: Bereitstellung der Hardware, Wartung, Zustandsüberwachung und Reinigungsnachweis.', 'Scope: provision of hardware, maintenance, condition monitoring and cleaning verification.', 'Périmètre : mise à disposition du matériel, maintenance, surveillance d’état et preuve de nettoyage.', 'Alcance: suministro del hardware, mantenimiento, supervisión del estado y verificación de limpieza.')),
       options: [
         { id: 'no', label: V(L('Kommt für uns nicht infrage', 'Not an option for us', 'Exclu pour nous', 'No es una opción para nosotros'), L('Nicht relevant', 'Not relevant', 'Non pertinent', 'No relevante')) },
         { id: 'sceptical', label: V(L('Eher skeptisch', 'Rather sceptical', 'Plutôt sceptique', 'Más bien escéptico'), L('Eher nicht relevant', 'Rather not relevant', 'Plutôt non pertinent', 'Poco relevante')) },
-        { id: 'depends', label: V(L('Hängt von den Konditionen ab', 'Depends on the terms', 'Dépend des conditions', 'Depende de las condiciones'), L('Abhängig von den Konditionen', 'Depending on the terms', 'Selon les conditions', 'Según las condiciones')) },
         { id: 'interested', label: V(L('Interessant – wir möchten mehr erfahren', 'Interesting – we’d like to learn more', 'Intéressant – nous aimerions en savoir plus', 'Interesante: queremos saber más'), L('Relevant', 'Relevant', 'Pertinent', 'Relevante')) },
         { id: 'very', label: V(L('Sehr interessant – wir würden das gern zeitnah prüfen', 'Very interesting – we’d like to evaluate it soon', 'Très intéressant – nous aimerions l’étudier rapidement', 'Muy interesante: nos gustaría evaluarlo pronto'), L('Hoch relevant', 'Highly relevant', 'Très pertinent', 'Muy relevante')) },
       ],
@@ -518,82 +481,21 @@ window.SURVEY = {
       ],
     },
     {
-      id: 'adoption', type: 'single',
-      title: V(L('Ab wann würden Sie eine neue Reinigungstechnologie einsetzen?', 'At what point would you adopt a new cleaning technology?', 'À partir de quand adopteriez-vous une nouvelle technologie de nettoyage ?', '¿A partir de cuándo adoptaría una nueva tecnología de limpieza?'),
-        L('Wie gehen Sie typischerweise bei der Einführung neuer Reinigungstechnologien vor?', 'How do you typically approach the introduction of new cleaning technologies?', 'Comment abordez-vous généralement l’introduction de nouvelles technologies de nettoyage ?', '¿Cómo aborda normalmente la introducción de nuevas tecnologías de limpieza?')),
-      options: [
-        { id: 'pilot', label: V(L('Frühzeitig als Pilotanwender', 'Early, as a pilot user', 'Tôt, en tant qu’utilisateur pilote', 'Pronto, como usuario piloto'),
-          L('Wir testen neue Technologien frühzeitig in Pilotprojekten', 'We test new technologies early in pilot projects', 'Nous testons tôt les nouvelles technologies dans des projets pilotes', 'Probamos nuevas tecnologías pronto en proyectos piloto')) },
-        { id: 'references', label: V(L('Sobald erste Referenzen vorliegen', 'As soon as first references exist', 'Dès les premières références', 'En cuanto existan primeras referencias'),
-          L('Wir setzen auf Lösungen mit ersten Referenzen', 'We rely on solutions with initial references', 'Nous privilégions les solutions disposant de premières références', 'Apostamos por soluciones con primeras referencias')) },
-        { id: 'proven', label: V(L('Erst nach mehrjähriger Bewährung', 'Only after several years of proven use', 'Après plusieurs années de retour d’expérience', 'Solo tras varios años de eficacia probada'),
-          L('Wir setzen ausschließlich langjährig bewährte Lösungen ein', 'We only use solutions proven over many years', 'Nous n’utilisons que des solutions éprouvées depuis de nombreuses années', 'Solo usamos soluciones probadas durante muchos años')) },
-        { id: 'on_failure', label: V(L('Erst, wenn die bestehende Lösung ersetzt werden muss', 'Only when the existing solution has to be replaced', 'Uniquement lorsque la solution existante doit être remplacée', 'Solo cuando haya que sustituir la solución actual'),
-          L('Wir ersetzen Technik erst bei Ausfall oder am Ende der Lebensdauer', 'We only replace equipment on failure or at end of life', 'Nous ne remplaçons les équipements qu’en cas de panne ou en fin de vie', 'Solo sustituimos equipos en caso de fallo o al final de su vida útil')) },
-      ],
-    },
-    {
-      id: 'switch_trigger', type: 'multi', max: 3, default: false,
-      title: V(L('Was müsste erfüllt sein, damit Sie Ihre bestehende Reinigung umstellen?', 'What would need to be in place for you to switch your existing cleaning?', 'Quelles conditions devraient être remplies pour que vous changiez votre nettoyage actuel ?', '¿Qué tendría que cumplirse para que cambiara su limpieza actual?'),
-        L('Welche Voraussetzungen sind für Sie entscheidend, um eine bestehende Reinigungslösung zu ersetzen?', 'Which prerequisites are decisive for you to replace an existing cleaning solution?', 'Quelles conditions sont déterminantes pour remplacer une solution de nettoyage existante ?', '¿Qué requisitos son decisivos para sustituir una solución de limpieza existente?')),
-      options: [
-        { id: 'roi', label: L('Nachgewiesene Einsparung, kurze Amortisation', 'Proven savings, short payback', 'Économies prouvées, amortissement rapide', 'Ahorro demostrado, amortización rápida') },
-        { id: 'references', label: L('Referenzen aus der eigenen Branche', 'References from our industry', 'Références dans notre secteur', 'Referencias de nuestro sector') },
-        { id: 'trial', label: L('Test in der eigenen Anlage', 'Trial in our own plant', 'Essai dans notre installation', 'Prueba en nuestra propia planta') },
-        { id: 'no_retrofit', label: L('Keine Umbauten an der Anlage', 'No modifications to the plant', 'Aucune modification de l’installation', 'Sin modificaciones en la planta') },
-        { id: 'certification', label: L('Zertifizierungen (z. B. EHEDG, 3-A, FDA)', 'Certifications (e.g. EHEDG, 3-A, FDA)', 'Certifications (p. ex. EHEDG, 3-A, FDA)', 'Certificaciones (p. ej. EHEDG, 3-A, FDA)') },
-        { id: 'guarantee', label: L('Garantie auf das Reinigungsergebnis', 'Guaranteed cleaning result', 'Garantie du résultat de nettoyage', 'Garantía del resultado de limpieza') },
-        { id: 'support', label: L('Begleitung bei Inbetriebnahme und Validierung', 'Support with commissioning and validation', 'Accompagnement à la mise en service et à la validation', 'Apoyo en la puesta en marcha y validación') },
-      ],
-    },
-    {
-      id: 'decision_makers', type: 'multi', default: false,
-      title: V(L('Wer entscheidet in Ihrem Unternehmen über Reinigungstechnik?', 'Who decides on cleaning technology in your company?', 'Qui décide des technologies de nettoyage dans votre entreprise ?', '¿Quién decide sobre la tecnología de limpieza en su empresa?'),
-        L('Welche Funktionen sind an der Auswahl von Reinigungstechnik beteiligt?', 'Which functions are involved in selecting cleaning technology?', 'Quelles fonctions participent au choix des technologies de nettoyage ?', '¿Qué funciones participan en la selección de tecnología de limpieza?')),
-      options: [
-        { id: 'production', label: L('Produktion / Betrieb', 'Production / operations', 'Production / exploitation', 'Producción / operaciones') },
-        { id: 'maintenance', label: L('Instandhaltung', 'Maintenance', 'Maintenance', 'Mantenimiento') },
-        { id: 'qa', label: L('Qualitätssicherung / Hygiene', 'Quality assurance / hygiene', 'Assurance qualité / hygiène', 'Garantía de calidad / higiene') },
-        { id: 'engineering', label: L('Technik / Engineering', 'Engineering', 'Technique / ingénierie', 'Ingeniería') },
-        { id: 'purchasing', label: L('Einkauf', 'Purchasing', 'Achats', 'Compras') },
-        { id: 'management', label: L('Geschäftsleitung', 'Management', 'Direction', 'Dirección') },
-        { id: 'oem', label: L('Wird vom Anlagenbauer vorgegeben', 'Specified by the plant manufacturer', 'Imposé par le constructeur', 'Lo define el fabricante de la instalación') },
-      ],
-    },
-    {
-      id: 'info_sources', type: 'multi', default: false,
-      title: V(L('Wo informieren Sie sich über neue Reinigungstechnik?', 'Where do you find out about new cleaning technology?', 'Où vous informez-vous sur les nouvelles technologies de nettoyage ?', '¿Dónde se informa sobre nuevas tecnologías de limpieza?'),
-        L('Welche Informationsquellen nutzen Sie zu neuen Reinigungstechnologien?', 'Which sources of information do you use on new cleaning technologies?', 'Quelles sources d’information utilisez-vous sur les nouvelles technologies de nettoyage ?', '¿Qué fuentes de información utiliza sobre nuevas tecnologías de limpieza?')),
-      options: [
-        { id: 'fairs', label: L('Fachmessen', 'Trade fairs', 'Salons professionnels', 'Ferias especializadas') },
-        { id: 'press', label: L('Fachzeitschriften', 'Trade journals', 'Revues spécialisées', 'Revistas especializadas') },
-        { id: 'supplier', label: L('Außendienst der Lieferanten', 'Supplier sales representatives', 'Commerciaux des fournisseurs', 'Comerciales de proveedores') },
-        { id: 'oem', label: L('Anlagenbauer', 'Plant manufacturers', 'Constructeurs d’installations', 'Fabricantes de instalaciones') },
-        { id: 'research', label: L('Verbände und Forschung (z. B. VDMA, Fraunhofer)', 'Associations and research (e.g. VDMA, Fraunhofer)', 'Associations et recherche (p. ex. VDMA, Fraunhofer)', 'Asociaciones e investigación (p. ej. VDMA, Fraunhofer)') },
-        { id: 'online', label: L('Online-Recherche und LinkedIn', 'Online research and LinkedIn', 'Recherche en ligne et LinkedIn', 'Búsqueda en línea y LinkedIn') },
-        { id: 'network', label: L('Kollegen und Netzwerk', 'Colleagues and network', 'Collègues et réseau', 'Colegas y red profesional') },
-      ],
-    },
-    {
       id: 'wish', type: 'text', optional: true, rows: 4,
-      title: V(L('Wenn Sie einen Wunsch frei hätten: Was würde Ihre Tank- und Anlagenreinigung grundlegend verbessern?', 'If you could have one wish: what would fundamentally improve your tank and plant cleaning?', 'Si vous pouviez faire un vœu : qu’est-ce qui améliorerait fondamentalement le nettoyage de vos cuves et installations ?', 'Si pudiera pedir un deseo: ¿qué mejoraría de forma fundamental la limpieza de sus tanques e instalaciones?'),
-        L('Welche Anforderungen oder Verbesserungen werden für Ihre Tank- und Anlagenreinigung künftig von größter Bedeutung sein?', 'Which requirements or improvements will be most important for your tank and plant cleaning in the future?', 'Quelles exigences ou améliorations seront les plus importantes à l’avenir pour le nettoyage de vos cuves et installations ?', '¿Qué requisitos o mejoras serán más importantes en el futuro para la limpieza de sus tanques e instalaciones?')),
+      title: same2(L('Wenn Sie einen Wunsch zur Verbesserung Ihrer Reinigung frei hätten: Welcher wäre das?', 'If you had one wish to improve your cleaning, what would it be?', 'Si vous pouviez formuler un souhait pour améliorer votre nettoyage, lequel serait-ce ?', 'Si pudiera pedir un deseo para mejorar su limpieza, ¿cuál sería?')),
       sub: V(L('Technik, Service oder Geschäftsmodell – alle Ideen sind willkommen.', 'Technology, service or business model – all ideas are welcome.', 'Technique, service ou modèle économique – toutes les idées sont les bienvenues.', 'Tecnología, servicio o modelo de negocio: todas las ideas son bienvenidas.'),
         L('Bitte beschreiben Sie Ihre Anforderungen möglichst konkret.', 'Please describe your requirements as specifically as possible.', 'Veuillez décrire vos exigences aussi précisément que possible.', 'Describa sus requisitos de la forma más concreta posible.')),
       placeholder: V(L('Ich wünsche mir …', 'I would like …', 'Je souhaiterais …', 'Me gustaría …'), L('Ihre Anmerkungen', 'Your comments', 'Vos remarques', 'Sus comentarios')),
     },
     {
       id: 'company', type: 'form',
-      title: V(L('Zum Abschluss noch einige Angaben zur Einordnung.', 'Finally, a few details for classification.', 'Pour terminer, quelques informations de classification.', 'Para terminar, algunos datos para la clasificación.'),
-        L('Angaben zu Ihrem Unternehmen', 'Information about your company', 'Informations sur votre entreprise', 'Datos de su empresa')),
-      sub: V(L('Wir fragen weder Namen noch Position ab – nur Firma und Land.', 'We don’t ask for names or job titles – only company and country.', 'Nous ne demandons ni nom ni fonction – uniquement l’entreprise et le pays.', 'No pedimos nombres ni cargos: solo empresa y país.'),
-        L('Die Angaben dienen ausschließlich der statistischen Auswertung; die Angabe einer E-Mail-Adresse ist freiwillig.', 'This information is used solely for statistical analysis; providing an email address is optional.', 'Ces informations servent uniquement à l’analyse statistique ; l’indication d’une adresse e-mail est facultative.', 'Estos datos se utilizan únicamente para el análisis estadístico; indicar un correo electrónico es opcional.')),
+      title: same2(L('Optionale Angaben zu Ihrem Unternehmen', 'Optional information about your company', 'Informations facultatives sur votre entreprise', 'Datos opcionales de su empresa')),
       fields: [
-        { id: 'company', required: true, autocomplete: 'organization', label: L('Firma', 'Company', 'Entreprise', 'Empresa') },
-        { id: 'country', type: 'country', required: true, autocomplete: 'country-name', label: L('Land', 'Country', 'Pays', 'País') },
+        { id: 'company', autocomplete: 'organization', label: L('Firma', 'Company', 'Entreprise', 'Empresa') },
+        { id: 'country', type: 'country', autocomplete: 'country-name', label: L('Land', 'Country', 'Pays', 'País') },
         { id: 'email', type: 'email', wide: true, autocomplete: 'email',
-          label: V(L('E-Mail – falls Sie die Ergebnisse oder eine Einladung zu einem Pilotprojekt erhalten möchten', 'Email – if you would like the results or an invitation to a pilot project', 'E-mail – si vous souhaitez recevoir les résultats ou une invitation à un projet pilote', 'Correo electrónico: si desea recibir los resultados o una invitación a un proyecto piloto'),
-            L('E-Mail-Adresse für die Zusendung der Ergebnisse oder eine Einladung zu Pilotprojekten', 'Email address to receive the results or an invitation to pilot projects', 'Adresse e-mail pour recevoir les résultats ou une invitation à des projets pilotes', 'Correo electrónico para recibir los resultados o una invitación a proyectos piloto')) },
+          notice: L('E-Mail-Adresse zur Teilnahme am Gewinnspiel erforderlich', 'Email address required to enter the prize draw', 'Adresse e-mail requise pour participer au tirage au sort', 'Correo electrónico necesario para participar en el sorteo'),
+          label: L('E-Mail', 'Email', 'E-mail', 'Correo electrónico') },
       ],
       note: L('Ihre Angaben verwenden wir ausschließlich zur Auswertung dieser Umfrage und geben sie nicht an Dritte weiter.', 'We use your information solely to evaluate this survey and do not share it with third parties.', 'Vos données sont utilisées uniquement pour l’analyse de cette enquête et ne sont pas transmises à des tiers.', 'Sus datos se usan únicamente para evaluar esta encuesta y no se comparten con terceros.'),
     },
@@ -647,6 +549,7 @@ window.SURVEY = {
     chooseAny: { de: 'Mehrfachauswahl möglich', en: 'Select all that apply', fr: 'Plusieurs réponses possibles', es: 'Varias respuestas posibles' },
     other: { de: 'Sonstiges …', en: 'Other …', fr: 'Autre …', es: 'Otro …' },
     otherPh: { de: 'Bitte kurz beschreiben', en: 'Please describe briefly', fr: 'Précisez brièvement', es: 'Descríbalo brevemente' },
+    specifyPh: { de: 'Bitte angeben (optional)', en: 'Please specify (optional)', fr: 'Veuillez préciser (facultatif)', es: 'Especifique (opcional)' },
     dragHint: { de: 'Ziehen zum Sortieren – oder die Pfeile nutzen', en: 'Drag to reorder – or use the arrows', fr: 'Glissez pour trier – ou utilisez les flèches', es: 'Arrastre para ordenar – o use las flechas' },
     most: { de: 'Am wichtigsten', en: 'Most important', fr: 'Le plus important', es: 'Lo más importante' },
     least: { de: 'Am wenigsten wichtig', en: 'Least important', fr: 'Le moins important', es: 'Lo menos importante' },
@@ -722,6 +625,15 @@ window.SURVEY = {
   const TYPES = {
     single(q) {
       const wrap = h('div', { class: 'opts ' + (q.layout || 'list'), role: 'radiogroup' });
+      // Option mit „text: true" (z. B. „Andere Branche") blendet ein optionales Freitextfeld ein
+      const textOpt = q.options.find(o => o.text);
+      let input = null;
+      if (textOpt) {
+        input = h('input', { class: 'field', type: 'text', placeholder: t(UI.specifyPh), maxlength: 200 });
+        input.value = state.answers[q.id + '_text'] || '';
+        input.hidden = get(q) !== textOpt.id;
+        input.addEventListener('input', () => { state.answers[q.id + '_text'] = input.value; });
+      }
       q.options.forEach((o, i) => {
         const b = h('button', {
           type: 'button', class: 'opt' + (get(q) === o.id ? ' sel' : ''), role: 'radio', 'aria-checked': String(get(q) === o.id), 'data-key': KEYS[i],
@@ -729,12 +641,14 @@ window.SURVEY = {
             set(q, o.id);
             wrap.querySelectorAll('.opt').forEach(x => { x.classList.toggle('sel', x === b); x.setAttribute('aria-checked', String(x === b)); });
             retrigger(b, 'pop');
-            if (q.autoNext !== false) autoNext();
+            if (input) input.hidden = !o.text;
+            if (o.text) setTimeout(() => input.focus(), 60);
+            else if (q.autoNext !== false) autoNext();
           },
         }, keyBadge(i), ico(o), h('span', { class: 'lbl' }, t(o.label), o.desc ? h('small', null, t(o.desc)) : null));
         wrap.append(b);
       });
-      return wrap;
+      return input ? h('div', null, wrap, input) : wrap;
     },
 
     multi(q) {
@@ -911,7 +825,7 @@ window.SURVEY = {
       };
       ta.addEventListener('input', () => upd(true));
       upd(false);
-      wrap.append(q.wish ? h('div', { class: 'wand', 'aria-hidden': 'true' }, '🪄') : null, ta,
+      wrap.append(ta,
         h('div', { class: 'below' }, h('span', { class: 'hint' }, t(UI.ctrlEnter)), cnt));
       return wrap;
     },
@@ -930,6 +844,7 @@ window.SURVEY = {
         if (i === 0) input.setAttribute('autofocus', '');
         input.addEventListener('input', () => { a[f.id] = input.value; refreshNav(); });
         grid.append(h('label', { class: 'fld' + (f.wide ? ' wide' : ''), for: input.id },
+          f.notice ? h('strong', { class: 'fld-notice' }, t(f.notice)) : null,
           h('span', null, t(f.label), f.required ? null : h('em', null, ' · ' + t(UI.optional))), input));
       });
       if (q.fields.some(f => f.type === 'country')) grid.append(h('datalist', { id: 'countries' }, ...COUNTRIES.map(c => h('option', { value: c }))));
@@ -1236,7 +1151,10 @@ window.SURVEY = {
     if (a == null) return '';
     const lab = (list, id) => tl(list.find(o => o.id === id)?.label, L);
     switch (q.type) {
-      case 'single': return lab(q.options, a);
+      case 'single': {
+        const txt = (state.answers[q.id + '_text'] || '').trim();
+        return q.options.find(o => o.id === a)?.text && txt ? `${lab(q.options, a)}: ${txt}` : lab(q.options, a);
+      }
       case 'multi': return a.sel.map(id => (id === '__other' ? `${tl(UI.other, L).replace(' …', '')}: ${a.other}` : lab(q.options, id))).join('; ');
       case 'rank': return a.map((id, i) => `${i + 1}. ${lab(q.items, id)}`).join(' | ');
       case 'cards': return Object.fromEntries(q.items.filter(it => it.id in a).map(it => [tl(it.label, L), lab(q.scaleOpts, a[it.id])]));
@@ -1253,7 +1171,8 @@ window.SURVEY = {
       lang,
       submittedAt: new Date().toISOString(),
       durationSec: Math.round((Date.now() - (state.startedAt || Date.now())) / 1000),
-      answers: Object.fromEntries(Q.map(q => [q.id, state.answers[q.id] ?? null])),
+      answers: Object.fromEntries(Q.flatMap(q => [[q.id, state.answers[q.id] ?? null],
+        ...(q.options?.some(o => o.text) && get(q) === q.options.find(o => o.text).id ? [[q.id + '_text', (state.answers[q.id + '_text'] || '').trim()]] : [])])),
       readable: Object.fromEntries(Q.map(q => [`[${q.id}] ${tl(q.title, L)}`, readable(q, state.answers[q.id], L)])),
     };
   }

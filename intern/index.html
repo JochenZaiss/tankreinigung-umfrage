@@ -180,6 +180,7 @@ body.ext .idea.live { background: linear-gradient(150deg, var(--petrol), #022638
 .fld { display: grid; gap: 7px; font-size: 14px; font-weight: 600; }
 .fld em { font-weight: 400; font-style: normal; color: var(--muted); }
 .fld.wide { grid-column: 1 / -1; }
+.fld-notice { display: block; margin: 8px 0 2px; padding: 10px 14px; border-left: 3px solid var(--accent2); border-radius: 0 10px 10px 0; background: var(--accent-soft); font-size: 15px; font-weight: 700; color: var(--fg); }
 .note { font-size: 13px; color: var(--muted); margin-top: 18px; line-height: 1.5; max-width: 62ch; }
 
 #nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0 26px; }
@@ -525,6 +526,7 @@ window.SURVEY = {
     chooseAny: { de: 'Mehrfachauswahl möglich', en: 'Select all that apply', fr: 'Plusieurs réponses possibles', es: 'Varias respuestas posibles' },
     other: { de: 'Sonstiges …', en: 'Other …', fr: 'Autre …', es: 'Otro …' },
     otherPh: { de: 'Bitte kurz beschreiben', en: 'Please describe briefly', fr: 'Précisez brièvement', es: 'Descríbalo brevemente' },
+    specifyPh: { de: 'Bitte angeben (optional)', en: 'Please specify (optional)', fr: 'Veuillez préciser (facultatif)', es: 'Especifique (opcional)' },
     dragHint: { de: 'Ziehen zum Sortieren – oder die Pfeile nutzen', en: 'Drag to reorder – or use the arrows', fr: 'Glissez pour trier – ou utilisez les flèches', es: 'Arrastre para ordenar – o use las flechas' },
     most: { de: 'Am wichtigsten', en: 'Most important', fr: 'Le plus important', es: 'Lo más importante' },
     least: { de: 'Am wenigsten wichtig', en: 'Least important', fr: 'Le moins important', es: 'Lo menos importante' },
@@ -600,6 +602,15 @@ window.SURVEY = {
   const TYPES = {
     single(q) {
       const wrap = h('div', { class: 'opts ' + (q.layout || 'list'), role: 'radiogroup' });
+      // Option mit „text: true" (z. B. „Andere Branche") blendet ein optionales Freitextfeld ein
+      const textOpt = q.options.find(o => o.text);
+      let input = null;
+      if (textOpt) {
+        input = h('input', { class: 'field', type: 'text', placeholder: t(UI.specifyPh), maxlength: 200 });
+        input.value = state.answers[q.id + '_text'] || '';
+        input.hidden = get(q) !== textOpt.id;
+        input.addEventListener('input', () => { state.answers[q.id + '_text'] = input.value; });
+      }
       q.options.forEach((o, i) => {
         const b = h('button', {
           type: 'button', class: 'opt' + (get(q) === o.id ? ' sel' : ''), role: 'radio', 'aria-checked': String(get(q) === o.id), 'data-key': KEYS[i],
@@ -607,12 +618,14 @@ window.SURVEY = {
             set(q, o.id);
             wrap.querySelectorAll('.opt').forEach(x => { x.classList.toggle('sel', x === b); x.setAttribute('aria-checked', String(x === b)); });
             retrigger(b, 'pop');
-            if (q.autoNext !== false) autoNext();
+            if (input) input.hidden = !o.text;
+            if (o.text) setTimeout(() => input.focus(), 60);
+            else if (q.autoNext !== false) autoNext();
           },
         }, keyBadge(i), ico(o), h('span', { class: 'lbl' }, t(o.label), o.desc ? h('small', null, t(o.desc)) : null));
         wrap.append(b);
       });
-      return wrap;
+      return input ? h('div', null, wrap, input) : wrap;
     },
 
     multi(q) {
@@ -789,7 +802,7 @@ window.SURVEY = {
       };
       ta.addEventListener('input', () => upd(true));
       upd(false);
-      wrap.append(q.wish ? h('div', { class: 'wand', 'aria-hidden': 'true' }, '🪄') : null, ta,
+      wrap.append(ta,
         h('div', { class: 'below' }, h('span', { class: 'hint' }, t(UI.ctrlEnter)), cnt));
       return wrap;
     },
@@ -808,6 +821,7 @@ window.SURVEY = {
         if (i === 0) input.setAttribute('autofocus', '');
         input.addEventListener('input', () => { a[f.id] = input.value; refreshNav(); });
         grid.append(h('label', { class: 'fld' + (f.wide ? ' wide' : ''), for: input.id },
+          f.notice ? h('strong', { class: 'fld-notice' }, t(f.notice)) : null,
           h('span', null, t(f.label), f.required ? null : h('em', null, ' · ' + t(UI.optional))), input));
       });
       if (q.fields.some(f => f.type === 'country')) grid.append(h('datalist', { id: 'countries' }, ...COUNTRIES.map(c => h('option', { value: c }))));
@@ -1114,7 +1128,10 @@ window.SURVEY = {
     if (a == null) return '';
     const lab = (list, id) => tl(list.find(o => o.id === id)?.label, L);
     switch (q.type) {
-      case 'single': return lab(q.options, a);
+      case 'single': {
+        const txt = (state.answers[q.id + '_text'] || '').trim();
+        return q.options.find(o => o.id === a)?.text && txt ? `${lab(q.options, a)}: ${txt}` : lab(q.options, a);
+      }
       case 'multi': return a.sel.map(id => (id === '__other' ? `${tl(UI.other, L).replace(' …', '')}: ${a.other}` : lab(q.options, id))).join('; ');
       case 'rank': return a.map((id, i) => `${i + 1}. ${lab(q.items, id)}`).join(' | ');
       case 'cards': return Object.fromEntries(q.items.filter(it => it.id in a).map(it => [tl(it.label, L), lab(q.scaleOpts, a[it.id])]));
@@ -1131,7 +1148,8 @@ window.SURVEY = {
       lang,
       submittedAt: new Date().toISOString(),
       durationSec: Math.round((Date.now() - (state.startedAt || Date.now())) / 1000),
-      answers: Object.fromEntries(Q.map(q => [q.id, state.answers[q.id] ?? null])),
+      answers: Object.fromEntries(Q.flatMap(q => [[q.id, state.answers[q.id] ?? null],
+        ...(q.options?.some(o => o.text) && get(q) === q.options.find(o => o.text).id ? [[q.id + '_text', (state.answers[q.id + '_text'] || '').trim()]] : [])])),
       readable: Object.fromEntries(Q.map(q => [`[${q.id}] ${tl(q.title, L)}`, readable(q, state.answers[q.id], L)])),
     };
   }
